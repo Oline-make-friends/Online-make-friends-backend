@@ -7,6 +7,8 @@ var bodyParser = require("body-parser");
 const morgan = require("morgan");
 const http = require("http");
 const server = http.createServer(app);
+const options = { /* ... */ };
+const io = require('socket.io')(server, options);
 
 const authRoute = require("./routes/auth");
 const userRoute = require("./routes/user");
@@ -35,6 +37,19 @@ app.get("/api", (req, res) => {
 app.use("/auth", authRoute);
 app.use("/user", userRoute);
 app.use("/post", postRoute);
+
+//socket.io
+io.on('connection', client => {
+  console.log("new client connected");
+  client.on("fromClient", data => {
+    console.log(data);
+    client.emit("fromServer", `${Number(data)+1}`);
+  })
+
+  client.on("disconnect", client => console.log("client disconnected"));
+});
+
+
 
 server.listen(process.env.PORT || port, () => {
   console.log("Server is running... at port " + port);
