@@ -1,6 +1,5 @@
 const { Post } = require("../model/post");
 const { User } = require("../model/user");
-const { post } = require("../routes/post");
 
 const postController = {
 
@@ -41,7 +40,7 @@ const postController = {
     try {
       await Post.updateMany({ matches: req.body.id }, { matches: null });
       const post = await Post.findById(req.body.id);
-      await post.updateOne({$set: {is_deleted: true}});
+      await post.updateOne({ $set: { is_deleted: true } });
       res.status(200).json("Deleted successfully!");
     } catch (err) {
       res.status(500).json(err);
@@ -59,15 +58,14 @@ const postController = {
       res.status(500).json(error.message);
     }
   },
-  
+
 
   //get All post of a user
   getAllUserPost: async (req, res) => {
     try {
-      const user = await User.findOne({ name: req.params.username });
-        const posts = await Post.find({ userId: user._id });
-        posts.
-        res.status(200).json(posts);
+      const user = await User.findOne({ username: req.body.username });
+      const posts = await Post.find({ userId: user._id, is_deleted: false });
+      res.status(200).json(posts);
     } catch (error) {
       res.status(500).json(error.message);
     }
