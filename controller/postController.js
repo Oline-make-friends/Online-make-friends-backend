@@ -26,10 +26,22 @@ const postController = {
   },
 
   //Delete post
+  // deletePost: async (req, res) => {
+  //   try {
+  //     await Post.updateMany({ matches: req.body.id }, { matches: null });
+  //     await Post.findByIdAndDelete(req.body.id);
+  //     res.status(200).json("Deleted successfully!");
+  //   } catch (err) {
+  //     res.status(500).json(err);
+  //   }
+  // },
+
+  //Delete post with is_deleted
   deletePost: async (req, res) => {
     try {
       await Post.updateMany({ matches: req.body.id }, { matches: null });
-      await Post.findByIdAndDelete(req.body.id);
+      const post = await Post.findById(req.body.id);
+      await post.updateOne({$set: {is_deleted: true}});
       res.status(200).json("Deleted successfully!");
     } catch (err) {
       res.status(500).json(err);
@@ -39,19 +51,22 @@ const postController = {
   //Update post
   updatePost: async (req, res) => {
     try {
-      const post = await Post.findById(req.params.id);
+      const post = await Post.findById(req.body.id);
+      console.log(req.body.id);
       await post.updateOne({ $set: req.body });
       res.status(200).json("Updated successfully!");
     } catch (error) {
       res.status(500).json(error.message);
     }
   },
+  
 
   //get All post of a user
   getAllUserPost: async (req, res) => {
     try {
       const user = await User.findOne({ name: req.params.username });
         const posts = await Post.find({ userId: user._id });
+        posts.
         res.status(200).json(posts);
     } catch (error) {
       res.status(500).json(error.message);
