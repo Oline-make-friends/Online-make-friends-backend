@@ -51,7 +51,7 @@ const userController = {
     }
   },
 
-  //Update USER
+  //Update USER Profile
   updateUserProfile: async (req, res) => {
     try {
       const user = await User.findById(req.params.id);
@@ -79,6 +79,7 @@ const userController = {
     }
   },
 
+  //get User By FullName
   getUserByFullName: async (req, res) => {
     try {
       const user = await User.findOne({ name: req.params.fullname });
