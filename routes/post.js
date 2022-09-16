@@ -16,4 +16,6 @@ router.post("/delete", postController.deletePost);
 //update Post
 router.post("/update", postController.updatePost);
 
+//like post
+router.post("/like", postController.addLikePost);
 module.exports = router;

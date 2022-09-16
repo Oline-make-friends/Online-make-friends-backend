@@ -69,6 +69,22 @@ const postController = {
     } catch (error) {
       res.status(500).json(error.message);
     }
+  },
+
+  //add Like to post
+  addLikePost: async (req, res) => {
+    try {
+      const post = await Post.findById({ _id: req.body._id });
+      if (post.likes.includes(req.body.userId)) {
+        await Post.updateOne({ $pull: { likes: req.body.userId } });
+        res.status(200).json("Unliked!");
+      } else {
+        await Post.updateOne({ $push: { likes: req.body.userId } });
+        res.status(200).json("Liked!");
+      }
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
   }
 };
 
