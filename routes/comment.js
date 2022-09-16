@@ -12,4 +12,8 @@ router.post("/update",commentController.updateComment);
 
 //delete comment
 router.post("/delete",commentController.deleteComment);
+
+//get comment from post
+router.post("/get", commentController.getAllPostComment);
+
 module.exports = router;

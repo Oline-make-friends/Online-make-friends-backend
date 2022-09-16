@@ -1,4 +1,5 @@
 const { Comment } = require("../model/comment");
+const { Post } = require("../model/post");
 
 const commentController = {
     //get All comments
@@ -39,6 +40,16 @@ const commentController = {
             await Comment.updateMany({ matches: req.body.id }, { matches: null });
             await Comment.findByIdAndDelete(req.body.id);
             res.status(200).json("Deleted successfully!");
+        } catch (error) {
+            res.status(500).json(error.message);
+        }
+    },
+
+    //Get comment from post
+    getAllPostComment: async (req, res) => {
+        try {
+            const comments = await Comment.find({post_Id: req.body.post_Id, is_deleted: false});
+            res.status(200).json(comments);
         } catch (error) {
             res.status(500).json(error.message);
         }
