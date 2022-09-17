@@ -48,7 +48,7 @@ const commentController = {
     //Get comment from post
     getAllPostComment: async (req, res) => {
         try {
-            const comments = await Comment.find({post_Id: req.body.post_Id, is_deleted: false});
+            const comments = await Comment.find({post_id: req.body.post_id, is_deleted: false});
             res.status(200).json(comments);
         } catch (error) {
             res.status(500).json(error.message);
