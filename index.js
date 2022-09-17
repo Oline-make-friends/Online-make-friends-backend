@@ -39,14 +39,24 @@ app.use("/user", userRoute);
 app.use("/post", postRoute);
 
 //socket.io
-io.on('connection', client => {
-  console.log("new client connected");
-  client.on("fromClient", data => {
-    console.log(data);
-    client.emit("fromServer", `${Number(data)+1}`);
-  })
+const connectedUser = new Set();
+io.on('connection', socket => {
+  console.log("new client connected"+ socket.id);
+  connectedUser.add(socket.id);
+  io.emit("connected-user",connectedUser.size)
+  
 
-  client.on("disconnect", client => console.log("client disconnected"));
+  socket.on("disconnect", client => {
+    console.log("client disconnected");
+    connectedUser.delete(socket.id);
+    io.emit("connected-user",connectedUser.size) 
+  }
+  );
+
+  socket.on("message",data =>{
+    console.log(data);
+    socket.broadcast.emit('message-receive',data);
+  })
 });
 
 
