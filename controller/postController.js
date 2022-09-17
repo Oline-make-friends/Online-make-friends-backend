@@ -76,10 +76,10 @@ const postController = {
     try {
       const post = await Post.findById({ _id: req.body._id });
       if (post.likes.includes(req.body.userId)) {
-        await Post.updateOne({ $pull: { likes: req.body.userId } });
+        await Post.updateOne({ _id: req.body._id }, { $pull: { likes: req.body.userId } });
         res.status(200).json("Unliked!");
       } else {
-        await Post.updateOne({ $push: { likes: req.body.userId } });
+        await Post.updateOne({ _id: req.body._id }, { $push: { likes: req.body.userId } });
         res.status(200).json("Liked!");
       }
     } catch (error) {
