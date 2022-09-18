@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const userController = require("../controller/userController");
 
-router.post("/sendMail", userController.sendEmailResetPassword);
+router.post("/sendEmailResetPassword/:id", userController.sendEmailResetPassword);
 
 
 module.exports = router;

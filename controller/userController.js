@@ -117,14 +117,15 @@ const userController = {
       }
       res.status(200).json(user);
     } catch (error) {
-      req.status(500).json(error.message);
+      res.status(500).json(error.message);
     }
   },
 
   //send mail reset password
 
   sendEmailResetPassword: async (req, res) => {
-    const { email } = req.body;
+    try {
+      const { email } = req.body;
     // create reusable transporter object using the default SMTP transport
     let transporter = nodemailer.createTransport({
       service: "gmail",
@@ -133,15 +134,26 @@ const userController = {
         pass: "pfdsjbptjmftnvte", // generated ethereal password
       },
     });
-  
+    const result = Math.random().toString(36).substring(2,10);
+
+    const user = await User.findById(req.params.id);
+    await user.updateOne({ $set: req.body, password:result  });
+
+    
+
     // send mail with defined transport object
     await transporter.sendMail(
       {
         from: "mklaaicogido123@gmail.com", // sender address
         to: email, // list of receivers
-        subject: "Hello ✔", // Subject line
+        subject: "Reset Password", // Subject line
         text: "Hello world?", // plain text body
-        html: "<b>Hello world?</b>", // html body
+        html: `<b>Xin chào ${user.fullname} </b>\n
+        <p>Theo yêu cầu của bạn, gửi lại bạn thông tin mật mã tài khoản </p>\n
+        <p><b>Password</b>: ${result}</p>\n
+        <p>Cám ơn bạn và chúc bạn một ngày tốt lành.</p>
+        
+        `, // html body
       },
       (err) => {
         if (err) {
@@ -155,8 +167,12 @@ const userController = {
         });
       }
     );
+    res.status(200).json(result);
+    } catch (error) {
+      res.status(500).json(error.message);
+    } 
   }
-  
+
 }
 
 module.exports = userController;
