@@ -5,6 +5,7 @@ const postSchema = new mongoose.Schema(
     created_by: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
+      required: true,
     },
     content: {
       type: String,
@@ -25,6 +26,10 @@ const postSchema = new mongoose.Schema(
         ref: "Comment",
       },
     ],
+    is_deleted: {
+      type: Boolean,
+      default: false,
+    }
   },
   { timestamps: true }
 );
