@@ -41,15 +41,16 @@ const userController = {
   },
 
   //DELETE USER
-  deleteUser: async (req, res) => {
-    try {
-      await User.updateMany({ matches: req.body.id }, { matches: null });
-      await User.findByIdAndDelete(req.body.id);
-      res.status(200).json("Deleted successfully!");
-    } catch (err) {
-      res.status(500).json(err);
-    }
-  },
+  // deleteUser: async (req, res) => {
+  //   try {
+  //     await User.updateMany({ matches: req.body.id }, { matches: null });
+  //     await User.findByIdAndDelete(req.body.id);
+  //     res.status(200).json("Deleted successfully!");
+  //   } catch (err) {
+  //     res.status(500).json(err);
+  //   }
+  // },
+
 
   //Update USER
   updateUserProfile: async (req, res) => {
@@ -81,10 +82,41 @@ const userController = {
 
   getUserByFullName: async (req, res) => {
     try {
-      const user = await User.findOne({ name: req.params.fullname });
+      const user = await User.find({
+        fullname: { $regex: req.body.fullname },
+      });
+      // db.users.findOne({"username" : {$regex : "son"}});
       res.status(200).json(user);
     } catch (error) {
       res.status(500).json(error);
+    }
+  },
+
+  //get User by ID
+  getUser: async (req, res) => {
+    try {
+      const user = await User.findOne({
+        _id: req.params.id,
+      });
+      res.status(200).json(user);
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  },
+  //block user by id
+  blockUser: async (req, res) => {
+    try {
+      const user = await User.findOne({
+        _id: req.params.id,
+      });
+      {
+        user.is_active === true
+          ? await user.updateOne({ is_active: false })
+          : await user.updateOne({ is_active: true });
+      }
+      res.status(200).json(user);
+    } catch (error) {
+      req.status(500).json(error.message);
     }
   },
 };
