@@ -16,7 +16,6 @@ const userController = {
   Login: async (req, res) => {
     try {
       const { username, password } = req.body;
-
       const user = await User.findOne({
         user_name: username,
         password: password,
@@ -62,23 +61,34 @@ const userController = {
     }
   },
 
-  //Add friends
+  //Add friend
   addFriends: async (req, res) => {
     try {
-      const user = await User.findById(req.params.id);
-
+      const user = await User.findById(req.body.id);
       const friend = await User.findById(req.body.friend);
-      await user.updateOne({ $push: { matches: friend._id } });
-      await friend.updateOne({ $push: { matches: user._id } });
-
-      // console.log(friend);
-      // console.log(req.body.friend);
-      res.status(200).json(friend);
+      await user.updateOne({ $push: { friends: friend._id } });
+      await friend.updateOne({ $push: { friends: user._id } });
+      res.status(200).json("Add friend Success!");
     } catch (error) {
       res.status(500).json(error.message);
     }
   },
 
+  //Delete friend
+  deleteFriends: async (req, res) => {
+    try {
+      const user = await User.findById(req.body.id);
+
+      const friend = await User.findById(req.body.friend);
+      await user.updateOne({ $pull: { friends: friend._id } });
+      await friend.updateOne({ $pull: { friends: user._id } });
+      res.status(200).json("Delete friend Success!");
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
+  },
+
+  //get User using fullname
   getUserByFullName: async (req, res) => {
     try {
       const user = await User.findOne({ name: req.params.fullname });
