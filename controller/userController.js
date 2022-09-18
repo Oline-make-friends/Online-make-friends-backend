@@ -1,4 +1,5 @@
 const { User } = require("../model/user");
+const nodemailer = require("nodemailer");
 
 const userController = {
   //Add user
@@ -119,6 +120,43 @@ const userController = {
       req.status(500).json(error.message);
     }
   },
-};
+
+  //send mail reset password
+
+  sendEmailResetPassword: async (req, res) => {
+    const { email } = req.body;
+    // create reusable transporter object using the default SMTP transport
+    let transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "mklaaicogido123@gmail.com", // generated ethereal user
+        pass: "pfdsjbptjmftnvte", // generated ethereal password
+      },
+    });
+  
+    // send mail with defined transport object
+    await transporter.sendMail(
+      {
+        from: "mklaaicogido123@gmail.com", // sender address
+        to: email, // list of receivers
+        subject: "Hello ✔", // Subject line
+        text: "Hello world?", // plain text body
+        html: "<b>Hello world?</b>", // html body
+      },
+      (err) => {
+        if (err) {
+          return res.json({
+            message: "Lỗi",
+            err,
+          });
+        }
+        return res.json({
+          message: `Đã gửi mail thành công cho tài khoản ${email}`,
+        });
+      }
+    );
+  }
+  
+}
 
 module.exports = userController;

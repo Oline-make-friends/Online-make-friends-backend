@@ -14,6 +14,8 @@ const authRoute = require("./routes/auth");
 const userRoute = require("./routes/user");
 const postRoute = require("./routes/post");
 const commentRoute = require("./routes/comment");
+const mailRoute = require("./routes/sendmail");
+
 
 const port = 8000;
 dotenv.config();
@@ -39,6 +41,7 @@ app.use("/auth", authRoute);
 app.use("/user", userRoute);
 app.use("/post", postRoute);
 app.use("/comment", commentRoute);
+app.use("/sendMail",mailRoute);
 
 //socket.io
 const connectedUser = new Set();
