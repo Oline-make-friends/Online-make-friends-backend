@@ -5,10 +5,10 @@ const notificationController = require("../controller/notificationController");
 router.get("/getAll", notificationController.getAllNotification);
 
 //Add notification
-router.post("/add",notificationController.createNotification);
+router.post("/add", notificationController.createNotification);
 
 //Update notification
-router.post("/update",notificationController.updateNotification);
+router.post("/update", notificationController.updateNotification);
 
 //get notification from user
 router.post("/get", notificationController.getAllUserNotification);
