@@ -1,4 +1,5 @@
 const { User } = require("../model/user");
+const nodemailer = require("nodemailer");
 
 const userController = {
   //Add user
@@ -41,15 +42,16 @@ const userController = {
   },
 
   //DELETE USER
-  deleteUser: async (req, res) => {
-    try {
-      await User.updateMany({ matches: req.body.id }, { matches: null });
-      await User.findByIdAndDelete(req.body.id);
-      res.status(200).json("Deleted successfully!");
-    } catch (err) {
-      res.status(500).json(err);
-    }
-  },
+  // deleteUser: async (req, res) => {
+  //   try {
+  //     await User.updateMany({ matches: req.body.id }, { matches: null });
+  //     await User.findByIdAndDelete(req.body.id);
+  //     res.status(200).json("Deleted successfully!");
+  //   } catch (err) {
+  //     res.status(500).json(err);
+  //   }
+  // },
+
 
   //Update USER
   updateUserProfile: async (req, res) => {
@@ -81,14 +83,19 @@ const userController = {
 
   getUserByFullName: async (req, res) => {
     try {
-      const user = await User.findOne({ name: req.params.fullname });
+      const user = await User.find({
+        fullname: { $regex: req.body.fullname },
+      });
+      // db.users.findOne({"username" : {$regex : "son"}});
       res.status(200).json(user);
     } catch (error) {
       res.status(500).json(error);
     }
   },
 
+
   //get user by id
+
   getUser: async (req, res) => {
     try {
       const user = await User.findOne({
@@ -112,9 +119,64 @@ const userController = {
       }
       res.status(200).json(user);
     } catch (error) {
-      req.status(500).json(error.message);
+
+      res.status(500).json(error.message);
     }
   },
-};
+
+  //send mail reset password
+
+  sendEmailResetPassword: async (req, res) => {
+    try {
+      const { email } = req.body;
+    // create reusable transporter object using the default SMTP transport
+    let transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "mklaaicogido123@gmail.com", // generated ethereal user
+        pass: "pfdsjbptjmftnvte", // generated ethereal password
+      },
+    });
+    const result = Math.random().toString(36).substring(2,10);
+
+    const user = await User.findById(req.params.id);
+    await user.updateOne({ $set: req.body, password:result  });
+
+    
+
+    // send mail with defined transport object
+    await transporter.sendMail(
+      {
+        from: "mklaaicogido123@gmail.com", // sender address
+        to: email, // list of receivers
+        subject: "Reset Password", // Subject line
+        text: "Hello world?", // plain text body
+        html: `<b>Xin chào ${user.fullname} </b>\n
+        <p>Theo yêu cầu của bạn, gửi lại bạn thông tin mật mã tài khoản </p>\n
+        <p><b>Password</b>: ${result}</p>\n
+        <p>Cám ơn bạn và chúc bạn một ngày tốt lành.</p>
+        
+        `, // html body
+      },
+      (err) => {
+        if (err) {
+          return res.json({
+            message: "Lỗi",
+            err,
+          });
+        }
+        return res.json({
+          message: `Đã gửi mail thành công cho tài khoản ${email}`,
+        });
+      }
+    );
+    res.status(200).json(result);
+    } catch (error) {
+      res.status(500).json(error.message);
+    } 
+  }
+
+}
+
 
 module.exports = userController;
