@@ -87,6 +87,34 @@ const userController = {
       res.status(500).json(error);
     }
   },
+
+  //get user by id
+  getUser: async (req, res) => {
+    try {
+      const user = await User.findOne({
+        _id: req.params.id,
+      });
+      res.status(200).json(user);
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  },
+  //block user by id
+  blockUser: async (req, res) => {
+    try {
+      const user = await User.findOne({
+        _id: req.params.id,
+      });
+      {
+        user.is_active === true
+          ? await user.updateOne({ is_active: false })
+          : await user.updateOne({ is_active: true });
+      }
+      res.status(200).json(user);
+    } catch (error) {
+      req.status(500).json(error.message);
+    }
+  },
 };
 
 module.exports = userController;
