@@ -93,7 +93,9 @@ const userController = {
     }
   },
 
-  //get User by ID
+
+  //get user by id
+
   getUser: async (req, res) => {
     try {
       const user = await User.findOne({
@@ -117,6 +119,7 @@ const userController = {
       }
       res.status(200).json(user);
     } catch (error) {
+
       res.status(500).json(error.message);
     }
   },
@@ -174,5 +177,6 @@ const userController = {
   }
 
 }
+
 
 module.exports = userController;
