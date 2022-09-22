@@ -15,6 +15,7 @@ const userRoute = require("./routes/user");
 const postRoute = require("./routes/post");
 const commentRoute = require("./routes/comment");
 const notificationRoute = require("./routes/notification");
+const messageRoute = require("./routes/message");
 
 const port = 8000;
 dotenv.config();
@@ -41,13 +42,15 @@ app.use("/user", userRoute);
 app.use("/post", postRoute);
 app.use("/comment", commentRoute);
 app.use("/noti", notificationRoute);
+app.use("/message", messageRoute);
+
 //socket.io
 const connectedUser = new Set();
 io.on('connection', socket => {
   console.log("new client connected"+ socket.id);
   connectedUser.add(socket.id);
   io.emit("connected-user",connectedUser.size)
-  
+                                                                                                          
 
   socket.on("disconnect", client => {
     console.log("client disconnected");
