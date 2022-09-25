@@ -63,8 +63,7 @@ const postController = {
   //get All post of a user
   getAllUserPost: async (req, res) => {
     try {
-      const user = await User.findOne({ username: req.body.username });
-      const posts = await Post.find({ created_by: user._id, is_deleted: false });
+      const posts = await Post.find({ created_by: req.params.id, is_deleted: false }).populate("created_by");;
       res.status(200).json(posts);
     } catch (error) {
       res.status(500).json(error.message);

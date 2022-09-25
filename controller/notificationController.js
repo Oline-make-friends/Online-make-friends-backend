@@ -5,7 +5,7 @@ const notificationController = {
     //get All notification
     getAllNotification: async (req, res) => {
         try {
-            const notifications = await Notification.find();
+            const notifications = await Notification.find().populate("user_id");
             if (notifications) {
                 res.status(200).json(notifications);
             } else {

@@ -1,8 +1,11 @@
 const router = require("express").Router();
 const userController = require("../controller/userController");
 
+//get All Account
+router.get("/getAllAccount", userController.getAllAccount);
+
 //get All User
-router.get("/getAll", userController.getAllUser);
+router.get("/getAllUser", userController.getAllUser);
 
 //get All User by Fullname
 router.post("/getUserByFullName", userController.getUserByFullName);

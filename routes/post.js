@@ -5,7 +5,7 @@ const postController = require("../controller/postController");
 router.get("/getAll", postController.getAllPost);
 
 //get All post user
-router.post("/get",postController.getAllUserPost);
+router.post("/get/:id",postController.getAllUserPost);
 
 //create Post
 router.post("/add", postController.createPost);

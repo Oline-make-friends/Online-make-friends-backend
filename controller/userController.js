@@ -30,10 +30,20 @@ const userController = {
     }
   },
 
-  //GET ALL USER
-  getAllUser: async (req, res) => {
+  //GET ALL Account
+  getAllAccount: async (req, res) => {
     try {
       const users = await User.find().populate("friends");
+      res.status(200).json(users);
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
+  },
+
+  //GET ALL User
+  getAllUser: async (req, res) => {
+    try {
+      const users = await User.find({is_admin:false}).populate("friends");
       res.status(200).json(users);
     } catch (error) {
       res.status(500).json(error.message);
