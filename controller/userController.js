@@ -30,6 +30,21 @@ const userController = {
     }
   },
 
+  //Login by email
+  LoginByGmail: async (req, res) => {
+    try {
+      const user = await User.findOne({
+        user_name: req.params.email,
+      });
+      if (!user) {
+        return res.status(500).json("Can not find account, please sign up");
+      }
+      res.status(200).json(user);
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
+  },
+
   //GET ALL Account
   getAllAccount: async (req, res) => {
     try {
