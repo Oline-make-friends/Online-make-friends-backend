@@ -16,7 +16,7 @@ const reportController = {
     //get All reports
     getAllReport: async (req, res) => {
         try {
-            const reports = await Report.find();
+            const reports = await Report.find().populate("sent_by");
             res.status(200).json(reports);
         } catch (error) {
             res.status(500).json(error.message);
