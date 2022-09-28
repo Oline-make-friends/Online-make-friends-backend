@@ -8,11 +8,9 @@ router.get("/getAll", notificationController.getAllNotification);
 router.post("/add", notificationController.createNotification);
 
 //Update notification
-router.post("/update", notificationController.updateNotification);
+router.post("/update/:id", notificationController.updateNotification);
 
 //get notification from user
 router.post("/get", notificationController.getAllUserNotification);
-
-
 
 module.exports = router;
