@@ -7,9 +7,8 @@ router.get("/getAllAccount", userController.getAllAccount);
 //get All User
 router.get("/getAllUser", userController.getAllUser);
 
-//get All User by Fullname
-router.post("/getUserByFullName", userController.getUserByFullName);
-
+//get user by email;
+router.post("/getUserByEmail/:email", userController.getUserbyEmail);
 
 router.post("/getUser/:id", userController.getUser);
 router.post("/blockUser/:id", userController.blockUser);
@@ -20,6 +19,5 @@ router.post("/update", userController.updateUserProfile);
 router.post("/addFriend", userController.addFriends);
 //delete Friend
 router.post("/deleteFriend", userController.deleteFriends);
-
 
 module.exports = router;
