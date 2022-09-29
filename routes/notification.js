@@ -10,6 +10,9 @@ router.post("/add", notificationController.createNotification);
 //Update notification
 router.post("/update/:id", notificationController.updateNotification);
 
+//Delete notification
+router.post("/delete/:id", notificationController.deleteNotification);
+
 //get notification from user
 router.post("/get", notificationController.getAllUserNotification);
 
