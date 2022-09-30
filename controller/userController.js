@@ -2,12 +2,12 @@ const { User } = require("../model/user");
 const nodemailer = require("nodemailer");
 
 const userController = {
-  //Add user
+  //Register user
   Register: async (req, res) => {
     try {
       const newUser = new User(req.body);
       const savedUser = await newUser.save();
-      res.status(404).json(savedUser);
+      res.status(200).json(savedUser);
     } catch (error) {
       res.status(500).json(error.message);
     }
@@ -34,7 +34,7 @@ const userController = {
   LoginByGmail: async (req, res) => {
     try {
       const user = await User.findOne({
-        user_name: req.params.email,
+        username: req.params.email,
       });
       if (!user) {
         return res.status(500).json("Can not find account, please sign up");
@@ -114,13 +114,12 @@ const userController = {
     }
   },
 
-  //get User using fullname
-  getUserByFullName: async (req, res) => {
+  //get User by username
+  getUserbyEmail: async (req, res) => {
     try {
       const user = await User.find({
-        fullname: { $regex: req.body.fullname },
+        username: req.params.email,
       });
-      // db.users.findOne({"username" : {$regex : "son"}});
       res.status(200).json(user);
     } catch (error) {
       res.status(500).json(error);
