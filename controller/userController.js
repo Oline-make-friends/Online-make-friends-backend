@@ -2,12 +2,12 @@ const { User } = require("../model/user");
 const nodemailer = require("nodemailer");
 
 const userController = {
-  //Add user
+  //Register user
   Register: async (req, res) => {
     try {
       const newUser = new User(req.body);
       const savedUser = await newUser.save();
-      res.status(404).json(savedUser);
+      res.status(200).json(savedUser);
     } catch (error) {
       res.status(500).json(error.message);
     }
@@ -30,10 +30,35 @@ const userController = {
     }
   },
 
-  //GET ALL USER
-  getAllUser: async (req, res) => {
+  //Login by email
+  LoginByGmail: async (req, res) => {
+    try {
+      const user = await User.findOne({
+        username: req.params.email,
+      });
+      if (!user) {
+        return res.status(500).json("Can not find account, please sign up");
+      }
+      res.status(200).json(user);
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
+  },
+
+  //GET ALL Account
+  getAllAccount: async (req, res) => {
     try {
       const users = await User.find().populate("friends");
+      res.status(200).json(users);
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
+  },
+
+  //GET ALL User
+  getAllUser: async (req, res) => {
+    try {
+      const users = await User.find({ is_admin: false }).populate("friends");
       res.status(200).json(users);
     } catch (error) {
       res.status(500).json(error.message);
@@ -89,13 +114,12 @@ const userController = {
     }
   },
 
-  //get User using fullname
-  getUserByFullName: async (req, res) => {
+  //get User by username
+  getUserbyEmail: async (req, res) => {
     try {
       const user = await User.find({
-        fullname: { $regex: req.body.fullname },
+        username: req.params.email,
       });
-      // db.users.findOne({"username" : {$regex : "son"}});
       res.status(200).json(user);
     } catch (error) {
       res.status(500).json(error);
@@ -168,6 +192,51 @@ const userController = {
         <p>Cám ơn bạn và chúc bạn một ngày tốt lành.</p>
         
         `, // html body
+        },
+        (err) => {
+          if (err) {
+            return res.json({
+              message: "Lỗi",
+              err,
+            });
+          }
+          return res.json({
+            message: `Đã gửi mail thành công cho tài khoản ${email}`,
+          });
+        }
+      );
+      res.status(200).json(result);
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
+  },
+
+  //send mail contact
+
+  sendEmailContact: async (req, res) => {
+    try {
+      const name = req.body.firstName + req.body.lastName;
+      const email = req.body.email;
+      const message = req.body.message;
+      const phone = req.body.phone;
+      // create reusable transporter object using the default SMTP transport
+      let transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: "mklaaicogido123@gmail.com", // generated ethereal user
+          pass: "pfdsjbptjmftnvte", // generated ethereal password
+        },
+      });
+      // send mail with defined transport object
+      await transporter.sendMail(
+        {
+          from: name,
+          to: "********@gmail.com",
+          subject: "Contact Online makes friend",
+          html: `<p>Name: ${name}</p>
+           <p>Email: ${email}</p>
+           <p>Phone: ${phone}</p>
+           <p>Message: ${message}</p>`,
         },
         (err) => {
           if (err) {

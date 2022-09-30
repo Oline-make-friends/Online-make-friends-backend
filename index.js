@@ -7,8 +7,10 @@ var bodyParser = require("body-parser");
 const morgan = require("morgan");
 const http = require("http");
 const server = http.createServer(app);
-const options = { /* ... */ };
-const io = require('socket.io')(server, options);
+const options = {
+  /* ... */
+};
+const io = require("socket.io")(server, options);
 
 const authRoute = require("./routes/auth");
 const userRoute = require("./routes/user");
@@ -17,6 +19,7 @@ const commentRoute = require("./routes/comment");
 const mailRoute = require("./routes/sendmail");
 const notificationRoute = require("./routes/notification");
 const messageRoute = require("./routes/message");
+const reportRoute = require("./routes/report");
 
 const port = 8000;
 dotenv.config();
@@ -42,32 +45,29 @@ app.use("/auth", authRoute);
 app.use("/user", userRoute);
 app.use("/post", postRoute);
 app.use("/comment", commentRoute);
-app.use("/sendMail",mailRoute);
+app.use("/sendMail", mailRoute);
 app.use("/noti", notificationRoute);
 app.use("/message", messageRoute);
+app.use("/report", reportRoute);
 
 //socket.io
 const connectedUser = new Set();
-io.on('connection', socket => {
-  console.log("new client connected"+ socket.id);
+io.on("connection", (socket) => {
+  console.log("new client connected" + socket.id);
   connectedUser.add(socket.id);
-  io.emit("connected-user",connectedUser.size)
-                                                                                                          
+  io.emit("connected-user", connectedUser.size);
 
-  socket.on("disconnect", client => {
+  socket.on("disconnect", (client) => {
     console.log("client disconnected");
     connectedUser.delete(socket.id);
-    io.emit("connected-user",connectedUser.size) 
-  }
-  );
+    io.emit("connected-user", connectedUser.size);
+  });
 
-  socket.on("message",data =>{
+  socket.on("message", (data) => {
     console.log(data);
-    socket.broadcast.emit('message-receive',data);
-  })
+    socket.broadcast.emit("message-receive", data);
+  });
 });
-
-
 
 server.listen(process.env.PORT || port, () => {
   console.log("Server is running... at port " + port);

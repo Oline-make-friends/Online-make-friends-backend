@@ -6,4 +6,6 @@ router.post(
   userController.sendEmailResetPassword
 );
 
+router.post("/sendEmailContact/", userController.sendEmailContact);
+
 module.exports = router;
