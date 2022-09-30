@@ -19,6 +19,7 @@ const commentRoute = require("./routes/comment");
 const mailRoute = require("./routes/sendmail");
 const notificationRoute = require("./routes/notification");
 const messageRoute = require("./routes/message");
+const reportRoute = require("./routes/report");
 
 const port = 8000;
 dotenv.config();
@@ -47,6 +48,7 @@ app.use("/comment", commentRoute);
 app.use("/sendMail", mailRoute);
 app.use("/noti", notificationRoute);
 app.use("/message", messageRoute);
+app.use("/report", reportRoute);
 
 //socket.io
 const connectedUser = new Set();
