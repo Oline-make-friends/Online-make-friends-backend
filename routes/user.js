@@ -13,7 +13,7 @@ router.post("/getUserByEmail/:email", userController.getUserbyEmail);
 router.post("/getUser/:id", userController.getUser);
 router.post("/blockUser/:id", userController.blockUser);
 //update User
-router.post("/update", userController.updateUserProfile);
+router.post("/update/:id", userController.updateUserProfile);
 
 //add Friend
 router.post("/addFriend", userController.addFriends);
