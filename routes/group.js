@@ -22,4 +22,6 @@ router.post("/getGroupAdmin", groupController.getAllGroupsAdmin);
 //get group user is member
 router.post("/getGroupMember", groupController.getAllGroupsMember);
 
+//upload post to group
+router.post("/upload", groupController.uploadPost);
 module.exports = router;
