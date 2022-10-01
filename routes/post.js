@@ -18,4 +18,8 @@ router.post("/update", postController.updatePost);
 
 //like post
 router.post("/like", postController.addLikePost);
+
+//search hashtag
+router.post("/searchTag", postController.findPostHashtag);
+
 module.exports = router;
