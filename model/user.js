@@ -5,7 +5,6 @@ const userSchema = new mongoose.Schema(
     username: {
       type: String,
       required: true,
-      minlength: 6,
       unique: true,
     },
     fullname: {
@@ -22,15 +21,20 @@ const userSchema = new mongoose.Schema(
     },
     location: {
       type: String,
+      default: "",
     },
-    interrests: {
-      type: String,
-    },
+    interrests: [
+      {
+        type: String,
+      },
+    ],
     major: {
       type: String,
+      default: "",
     },
     about: {
       type: String,
+      default: "",
     },
     friends: [
       {
@@ -47,15 +51,10 @@ const userSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
-    avatar_url: [
-      {
-        type: String,
-        default:
-          "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
-      },
-    ],
-    about: {
+    avatar_url: {
       type: String,
+      default:
+        "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-chat-lam-hinh-dai-dien.jpg",
     },
     is_admin: {
       type: Boolean,

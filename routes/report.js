@@ -8,9 +8,12 @@ router.get("/getAll", reportController.getAllReport);
 router.post("/add", reportController.createReport);
 
 //delete Report
-router.post("/delete", reportController.deleteReport);
+router.post("/delete/:id", reportController.deleteReport);
 
 //update Report(Approve or Decline)
-router.post("/update", reportController.updateReport);
+router.post("/update/:id", reportController.updateReport);
+
+//update Report(Approve or Decline)
+router.post("/updateStatus/:id", reportController.updateStatusReport);
 
 module.exports = router;
