@@ -20,6 +20,7 @@ const mailRoute = require("./routes/sendmail");
 const notificationRoute = require("./routes/notification");
 const messageRoute = require("./routes/message");
 const reportRoute = require("./routes/report");
+const groupRoute = require("./routes/group");
 
 const port = 8000;
 dotenv.config();
@@ -49,6 +50,7 @@ app.use("/sendMail", mailRoute);
 app.use("/noti", notificationRoute);
 app.use("/message", messageRoute);
 app.use("/report", reportRoute);
+app.use("/group", groupRoute);
 
 //socket.io
 const connectedUser = new Set();

@@ -1,5 +1,6 @@
 const { Post } = require("../model/post");
 const { User } = require("../model/user");
+const { post } = require("../routes/post");
 
 const postController = {
 
@@ -84,7 +85,39 @@ const postController = {
     } catch (error) {
       res.status(500).json(error.message);
     }
+  },
+
+  //find post by hashtag
+  findPostHashtag: async (req, res) => {
+    try {
+      const posts = await Post.find({
+        content: { $regex: req.body.hashtag },
+      });
+      res.status(200).json(posts);
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
+  },
+
+  //upload post in group
+  uploadPostInGroup: async (req, res) => {
+    try {
+      const newPost = new Post(req.body);
+      const savedPost = await newPost.save();
+      res.status(200).json(savedPost);
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
   }
+
 };
 
 module.exports = postController;
+
+// function isEmpty(obj) {
+//   for (var prop in obj) {
+//     if (obj.hasOwnProperty(prop))
+//       return false;
+//   }
+//   return JSON.stringify(obj) === JSON.stringify({});
+// }
