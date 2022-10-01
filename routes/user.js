@@ -15,6 +15,12 @@ router.post("/blockUser/:id", userController.blockUser);
 //update User
 router.post("/update/:id", userController.updateUserProfile);
 
+//remove User interest
+router.post("/removeInterest/:id", userController.removeUserInterest);
+
+//add User interest
+router.post("/addInterest/:id", userController.addUserInterest);
+
 //add Friend
 router.post("/addFriend", userController.addFriends);
 //delete Friend

@@ -87,6 +87,30 @@ const userController = {
     }
   },
 
+  //Remove interest USER
+  removeUserInterest: async (req, res) => {
+    try {
+      const user = await User.findById(req.params.id);
+      await user.updateOne({ $pull: { interrests: req.body.interest } });
+      res.status(200).json("Updated successfully!");
+    } catch (error) {
+      res.status(500).json(error.message);
+      console.log(error.message);
+    }
+  },
+
+  //add interest USER
+  addUserInterest: async (req, res) => {
+    try {
+      const user = await User.findById(req.params.id);
+      await user.updateOne({ $push: { interrests: req.body.interest } });
+      res.status(200).json("Updated successfully!");
+    } catch (error) {
+      res.status(500).json(error.message);
+      console.log(error.message);
+    }
+  },
+
   //Add friend
   addFriends: async (req, res) => {
     try {
