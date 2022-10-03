@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const groupSchema = new mongoose.Schema(
     {
         admin: {
-            type: mongoose.Schema.ObjectId,
+            type: mongoose.Schema.Types.ObjectId,
             ref: "User",
             require: true,
         },
@@ -20,13 +20,13 @@ const groupSchema = new mongoose.Schema(
         },
         posts: [
             {
-                type: mongoose.Schema.ObjectId,
+                type: mongoose.Schema.Types.ObjectId,
                 ref: "Post",
             }
         ],
         members: [
             {
-                type: mongoose.Schema.ObjectId,
+                type: mongoose.Schema.Types.ObjectId,
                 ref: "User",
             }
         ]

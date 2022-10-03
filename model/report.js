@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const reportSchema = new mongoose.Schema(
     {
         sent_by: {
-            type: mongoose.Schema.ObjectId,
+            type: mongoose.Schema.Types.ObjectId,
             ref: "User",
             require: true,
         },
