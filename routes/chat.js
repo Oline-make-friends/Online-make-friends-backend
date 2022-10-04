@@ -1,4 +1,5 @@
 const router = require("express").Router();
+const chatController = require("../controller/chatController");
 const chats = [
   {
     isGroupChat: false,
@@ -112,5 +113,7 @@ const chats = [
 router.get("/getAll", (req, res) => {
   res.status(200).json(chats);
 });
+
+router.get("/getAllUserChat", chatController.getAllUserChat);
 
 module.exports = router;
