@@ -6,7 +6,7 @@ const userController = {
   Register: async (req, res) => {
     try {
       const newUser = new User(req.body);
-      const savedUser = await newUser.save();
+      const savedUser = await await newUser.save();
       res.status(200).json(savedUser);
     } catch (error) {
       res.status(500).json(error.message);
@@ -24,7 +24,7 @@ const userController = {
       if (!user) {
         return res.status(500).json("Username or password is wrong!");
       }
-      res.status(200).json(user);
+      res.status(200).json(user).populate("friends");
     } catch (error) {
       res.status(500).json(error.message);
     }
@@ -35,7 +35,7 @@ const userController = {
     try {
       const user = await User.findOne({
         username: req.params.email,
-      });
+      }).populate("friends");
       if (!user) {
         return res.status(500).json("Can not find account, please sign up");
       }
