@@ -279,6 +279,21 @@ const userController = {
       res.status(500).json(error.message);
     }
   },
+
+  //request add friend
+  requestFriend: async (req, res) => {
+    try {
+      const friend = await User.findOne({ username: req.body.username }); //lấy User của người được gửi kết bạn
+      if (friend.friends_request.includes(req.body._id)) {
+        res.status(200).json("You already request this friend!");
+      } else {
+        await friend.updateOne({ $push: { friends_request: req.body._id } }); //bỏ id của người gửi kb vào fr_req của người được gửi kết bạn
+        res.status(200).json("Requested successfully!");
+      }
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
+  }
 };
 
 module.exports = userController;
