@@ -1,5 +1,6 @@
 const { User } = require("../model/user");
 const nodemailer = require("nodemailer");
+const { FriendRequest } = require("../model/friendRequest");
 
 const userController = {
   //Register user
@@ -285,11 +286,42 @@ const userController = {
     try {
       const friend = await User.findOne({ username: req.body.username }); //lấy User của người được gửi kết bạn
       if (friend.friends_request.includes(req.body._id)) {
+        // await friend.updateOne({ $pull: { friends_request: req.body._id } }); 
         res.status(200).json("You already request this friend!");
       } else {
+        const newRqFr = new FriendRequest({
+          sender_id: req.body._id,
+          receiver_id: friend._id,
+        });
+        newRqFr.save();
         await friend.updateOne({ $push: { friends_request: req.body._id } }); //bỏ id của người gửi kb vào fr_req của người được gửi kết bạn
         res.status(200).json("Requested successfully!");
       }
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
+  },
+
+  // follow user
+  followUser: async (req, res) => {
+    try {
+      const user = await User.findOne({ username: req.body.username });
+      if (user.follows.includes(req.body._id)) {
+        res.status(200).json("You already follow this user!");
+      } else {
+        await user.updateOne({ $push: { follows: req.body._id } });
+        res.status(200).json("Followed successfully!");
+      }
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
+  },
+
+  //getFriendRequestModel để test coi có tạo chưa
+  getRequestFriendRequestModel: async (req, res) => {
+    try {
+      const reqFrs = await FriendRequest.find();
+      res.status(200).json(reqFrs);
     } catch (error) {
       res.status(500).json(error.message);
     }
