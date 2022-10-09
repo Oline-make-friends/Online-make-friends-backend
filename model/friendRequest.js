@@ -12,6 +12,7 @@ const friendRequest = new mongoose.Schema(
     },
     status: {
       type: Boolean,
+      default: false,
     },
   },
   {
