@@ -33,6 +33,9 @@ router.post("/requestFriend", userController.requestFriend);
 //follow user
 router.post("/followUser", userController.followUser);
 
+//unfollow user
+router.post("/unfollowUser", userController.unfollowUser);
+
 //getAllFriendRequest
 router.get("/getFrRq", userController.getRequestFriendRequestModel);
 
