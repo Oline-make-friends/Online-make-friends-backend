@@ -34,6 +34,6 @@ router.post("/requestFriend", userController.requestFriend);
 router.post("/followUser", userController.followUser);
 
 //getAllFriendRequest
-router.post("/getFrRq", userController.getRequestFriendRequestModel);
+router.get("/getFrRq", userController.getRequestFriendRequestModel);
 
 module.exports = router;

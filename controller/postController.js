@@ -3,7 +3,6 @@ const { User } = require("../model/user");
 const { post } = require("../routes/post");
 
 const postController = {
-
   //Add post
   createPost: async (req, res) => {
     try {
@@ -18,7 +17,9 @@ const postController = {
   //get All posts
   getAllPost: async (req, res) => {
     try {
-      const posts = await Post.find().populate("created_by");
+      const posts = await Post.find({
+        is_deleted: false,
+      }).populate("created_by");
       res.status(200).json(posts);
     } catch (error) {
       res.status(500).json(error.message);
@@ -60,11 +61,13 @@ const postController = {
     }
   },
 
-
   //get All post of a user
   getAllUserPost: async (req, res) => {
     try {
-      const posts = await Post.find({ created_by: req.params.id, is_deleted: false }).populate("created_by");;
+      const posts = await Post.find({
+        created_by: req.params.id,
+        is_deleted: false,
+      }).populate("created_by");
       res.status(200).json(posts);
     } catch (error) {
       res.status(500).json(error.message);
@@ -76,10 +79,16 @@ const postController = {
     try {
       const post = await Post.findById({ _id: req.body._id });
       if (post.likes.includes(req.body.userId)) {
-        await Post.updateOne({ _id: req.body._id }, { $pull: { likes: req.body.userId } });
+        await Post.updateOne(
+          { _id: req.body._id },
+          { $pull: { likes: req.body.userId } }
+        );
         res.status(200).json("Unliked!");
       } else {
-        await Post.updateOne({ _id: req.body._id }, { $push: { likes: req.body.userId } });
+        await Post.updateOne(
+          { _id: req.body._id },
+          { $push: { likes: req.body.userId } }
+        );
         res.status(200).json("Liked!");
       }
     } catch (error) {
@@ -108,8 +117,7 @@ const postController = {
     } catch (error) {
       res.status(500).json(error.message);
     }
-  }
-
+  },
 };
 
 module.exports = postController;

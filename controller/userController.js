@@ -7,7 +7,7 @@ const userController = {
   Register: async (req, res) => {
     try {
       const newUser = new User(req.body);
-      const savedUser = await await newUser.save();
+      const savedUser = await newUser.save();
       res.status(200).json(savedUser);
     } catch (error) {
       res.status(500).json(error.message);
@@ -284,19 +284,18 @@ const userController = {
   //request add friend
   requestFriend: async (req, res) => {
     try {
-      const friend = await User.findOne({ username: req.body.username }); //lấy User của người được gửi kết bạn
-      if (friend.friends_request.includes(req.body._id)) {
-        // await friend.updateOne({ $pull: { friends_request: req.body._id } }); 
-        res.status(200).json("You already request this friend!");
-      } else {
-        const newRqFr = new FriendRequest({
-          sender_id: req.body._id,
-          receiver_id: friend._id,
-        });
-        newRqFr.save();
-        await friend.updateOne({ $push: { friends_request: req.body._id } }); //bỏ id của người gửi kb vào fr_req của người được gửi kết bạn
-        res.status(200).json("Requested successfully!");
+      const friend = await User.findById(req.body.sender_id); //lấy User của người được gửi kết bạn
+      if (
+        friend.friends.includes(req.body.sender_id) ||
+        FriendRequest.findOne(req.body.sender_id)
+      ) {
+        // await friend.updateOne({ $pull: { friends_request: req.body._id } });
+        return res.status(200).json("You already request this friend!");
       }
+      const newRqFr = new FriendRequest(req.body);
+      newRqFr.save();
+      // await friend.updateOne({ $push: { friends_request: req.body._id } }); //bỏ id của người gửi kb vào fr_req của người được gửi kết bạn
+      res.status(200).json("Requested successfully!");
     } catch (error) {
       res.status(500).json(error.message);
     }
@@ -317,15 +316,17 @@ const userController = {
     }
   },
 
-  //getFriendRequestModel để test coi có tạo chưa
+  //getFriendRequestModel
   getRequestFriendRequestModel: async (req, res) => {
     try {
-      const reqFrs = await FriendRequest.find();
+      const reqFrs = await FriendRequest.find({
+        receiver_id: req.body.receiver_id,
+      }).populate("sender_id");
       res.status(200).json(reqFrs);
     } catch (error) {
       res.status(500).json(error.message);
     }
-  }
+  },
 };
 
 module.exports = userController;
