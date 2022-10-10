@@ -23,7 +23,17 @@ router.post("/addInterest/:id", userController.addUserInterest);
 
 //add Friend
 router.post("/addFriend", userController.addFriends);
+
 //delete Friend
 router.post("/deleteFriend", userController.deleteFriends);
+
+//request Friend
+router.post("/requestFriend", userController.requestFriend);
+
+//follow user
+router.post("/followUser", userController.followUser);
+
+//getAllFriendRequest
+router.get("/getFrRq", userController.getRequestFriendRequestModel);
 
 module.exports = router;
