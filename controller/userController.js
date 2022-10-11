@@ -36,7 +36,9 @@ const userController = {
     try {
       const user = await User.findOne({
         username: req.params.email,
-      }).populate("friends");
+      })
+        .populate("friends")
+        .populate("follows");
       if (!user) {
         return res.status(500).json("Can not find account, please sign up");
       }
@@ -307,13 +309,37 @@ const userController = {
   // follow user
   followUser: async (req, res) => {
     try {
-      const user = await User.findOne({ username: req.body.username });
-      if (user.follows.includes(req.body._id)) {
+      const user = await User.findById(req.body.currentUser_id);
+      if (user.follows.includes(req.body.follower_id)) {
         res.status(200).json("You already follow this user!");
       } else {
-        await user.updateOne({ $push: { follows: req.body._id } });
+        await user.updateOne({ $push: { follows: req.body.follower_id } });
         res.status(200).json("Followed successfully!");
       }
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
+  },
+  // // unfollow user
+  // unFollowUser: async (req, res) => {
+  //   try {
+  //     const user = await User.findById(req.body.currentUser_id);
+  //     console.log(user);
+  //     await user.updateOne({ $pull: { follows: req.body.id } });
+  //     res.status(200).json("Unfollow successfully!");
+  //   } catch (error) {
+  //     res.status(500).json(error.message);
+  //   }
+  // },
+
+  // unfollow user
+  unFollowUser: async (req, res) => {
+    try {
+      const user = await User.findById(req.body.currentUser_id);
+
+      const follower = await User.findById(req.body.id);
+      await user.updateOne({ $pull: { follows: req.body.follower_id } });
+      res.status(200).json("Unfollow Success!");
     } catch (error) {
       res.status(500).json(error.message);
     }
