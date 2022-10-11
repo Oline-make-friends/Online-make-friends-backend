@@ -25,7 +25,7 @@ const userController = {
       if (!user) {
         return res.status(500).json("Username or password is wrong!");
       }
-      res.status(200).json(user).populate("friends");
+      res.status(200).json(user);
     } catch (error) {
       res.status(500).json(error.message);
     }
@@ -115,8 +115,9 @@ const userController = {
   //Add friend
   addFriends: async (req, res) => {
     try {
-      const user = await User.findById(req.body.id);
-      const friend = await User.findById(req.body.friend);
+      const user = await User.findById(req.body.sender_id);
+
+      const friend = await User.findById(req.body.receiver_id);
       await user.updateOne({ $push: { friends: friend._id } });
       await friend.updateOne({ $push: { friends: user._id } });
       res.status(200).json("Add friend Success!");
@@ -128,9 +129,9 @@ const userController = {
   //Delete friend
   deleteFriends: async (req, res) => {
     try {
-      const user = await User.findById(req.body.id);
+      const user = await User.findById(req.body.sender_id);
 
-      const friend = await User.findById(req.body.friend);
+      const friend = await User.findById(req.body.receiver_id);
       await user.updateOne({ $pull: { friends: friend._id } });
       await friend.updateOne({ $pull: { friends: user._id } });
       res.status(200).json("Delete friend Success!");
@@ -285,10 +286,12 @@ const userController = {
   requestFriend: async (req, res) => {
     try {
       const friend = await User.findById(req.body.sender_id); //lấy User của người được gửi kết bạn
-      if (
-        friend.friends.includes(req.body.sender_id) ||
-        FriendRequest.findOne(req.body.sender_id)
-      ) {
+      const check = FriendRequest.findOne({
+        sender_id: req.body.sender_id,
+        receiver_id: req.body.receiver_id,
+      });
+      console.log(check);
+      if (friend.friends.includes(req.body.sender_id) || check === null) {
         // await friend.updateOne({ $pull: { friends_request: req.body._id } });
         return res.status(200).json("You already request this friend!");
       }

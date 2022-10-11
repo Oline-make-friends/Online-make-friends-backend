@@ -54,7 +54,7 @@ const userSchema = new mongoose.Schema(
     avatar_url: {
       type: String,
       default:
-        "https://haycafe.vn/wp-content/uploads/2021/11/Anh-avatar-dep-Conversation-lam-hinh-dai-dien.jpg",
+        "https://assets.goal.com/v3/assets/bltcc7a7ffd2fbf71f5/blt07d62336ee8ed926/6214ab2690aa357658b8e4cc/18-maguire.jpg",
     },
     is_admin: {
       type: Boolean,
