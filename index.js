@@ -22,6 +22,7 @@ const messageRoute = require("./routes/message");
 const reportRoute = require("./routes/report");
 const groupRoute = require("./routes/group");
 const chatRoute = require("./routes/chat");
+const friendRequestRoute = require("./routes/friendRequest");
 
 const port = 8000;
 dotenv.config();
@@ -56,6 +57,7 @@ app.use("/message", messageRoute);
 app.use("/report", reportRoute);
 app.use("/group", groupRoute);
 app.use("/chat", chatRoute);
+app.use("/friendRequest", friendRequestRoute);
 
 //socket.io
 const connectedUser = new Set();
