@@ -24,4 +24,11 @@ router.post("/getGroupMember", groupController.getAllGroupsMember);
 
 //upload post to group
 router.post("/upload", groupController.uploadPost);
+
+//request join group
+router.post("/requestJoinGroup", groupController.requestJoinGroup);
+
+//get all request join group
+router.post("/getAllRQJoinGr", groupController.getRequestJoinGroup);
+
 module.exports = router;
