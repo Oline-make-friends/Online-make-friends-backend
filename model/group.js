@@ -2,13 +2,15 @@ const mongoose = require("mongoose");
 
 const groupSchema = new mongoose.Schema(
     {
-        admin: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "User",
-            require: true,
-        },
+        admins: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "User",
+                require: true,
+            }
+        ],
         name: {
-            type: String,  
+            type: String,
         },
         content: {
             type: String,
@@ -32,13 +34,13 @@ const groupSchema = new mongoose.Schema(
         ],
         groups_request: [
             {
-              type: mongoose.Schema.Types.ObjectId,
-              ref: "User",
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "User",
             },
-          ],
+        ],
 
     },
-{ timestamps: true }
+    { timestamps: true }
 );
 
 let Group = mongoose.model("Group", groupSchema);

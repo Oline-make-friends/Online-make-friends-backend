@@ -31,4 +31,13 @@ router.post("/requestJoinGroup", groupController.requestJoinGroup);
 //get all request join group
 router.post("/getAllRQJoinGr", groupController.getRequestJoinGroup);
 
+//get list member from group
+router.post("/getListMember", groupController.getListMember);
+
+//get list admin from group
+router.post("/getListAdmin", groupController.getListAdmin);
+
+//set role admin for user
+router.post("/setRoleAdmin", groupController.setRoleAdmin);
+
 module.exports = router;

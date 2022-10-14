@@ -123,7 +123,43 @@ const groupController = {
         } catch (error) {
             res.status(500).json(error.message);
         }
+    },
+
+    //get List member from group by group id
+    getListMember: async (req, res) => {
+        try {
+            const group = await Group.findById(req.body._id);
+            res.status(200).json(group.members);
+        } catch (error) {
+            res.status(500).json(error.message);
+        }
+    },
+
+    //get List admin from group by group id
+    getListAdmin: async (req, res) => {
+        try {
+            const group = await Group.findById(req.body._id);
+            res.status(200).json(group.admins);
+        } catch (error) {
+            res.status(500).json(error.message);
+        }
+    },
+
+    //set role admin for user
+    setRoleAdmin: async (req, res) => {
+        try {
+            const group = await Group.findById(req.body._id);
+            if (group.admins.includes(req.body.idUser)) {
+                res.status(200).json("This user is already admin of the group!");
+            } else {
+                await group.updateOne({ $push: { admins: req.body.idUser } });
+                res.status(200).json("Added successfully!");
+            }
+        } catch (error) {
+            res.status(500).json(error.message);
+        }
     }
+
 
 }
 
