@@ -64,7 +64,9 @@ const userController = {
   //GET ALL User
   getAllUser: async (req, res) => {
     try {
-      const users = await User.find({ is_admin: false }).populate("friends");
+      const users = await User.find({ is_admin: false })
+        .populate("friends")
+        .populate("follows");
       res.status(200).json(users);
     } catch (error) {
       res.status(500).json(error.message);
@@ -163,7 +165,9 @@ const userController = {
     try {
       const user = await User.findOne({
         _id: req.params.id,
-      });
+      })
+        .populate("friends")
+        .populate("follows");
       res.status(200).json(user);
     } catch (error) {
       res.status(500).json(error);
@@ -296,14 +300,17 @@ const userController = {
         sender_id: req.body.sender_id,
         receiver_id: req.body.receiver_id,
       });
-      if (friend.friends.includes(req.body.sender_id) || check.length > 0) {
+      console.log(friend.friends.includes(req.body.sender_id));
+      if (check.length > 0) {
         // await friend.updateOne({ $pull: { friends_request: req.body._id } });
+        return res.status(200).json("You already request this friend!");
+      } else if (friend.friends.includes(req.body.sender_id)) {
         return res.status(200).json("You already request this friend!");
       } else {
         const newRqFr = new FriendRequest(req.body);
         const saveRqFr = await newRqFr.save();
         // await friend.updateOne({ $push: { friends_request: req.body._id } }); //bỏ id của người gửi kb vào fr_req của người được gửi kết bạn
-        return res.status(200).json(friend);
+        return res.status(200).json(saveRqFr);
       }
     } catch (error) {
       res.status(500).json(error.message);
@@ -341,7 +348,7 @@ const userController = {
     try {
       const user = await User.findById(req.body.currentUser_id);
 
-      const follower = await User.findById(req.body.id);
+      // const follower = await User.findById(req.body.id);
       await user.updateOne({ $pull: { follows: req.body.follower_id } });
       res.status(200).json("Unfollow Success!");
     } catch (error) {
