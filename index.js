@@ -7,10 +7,6 @@ var bodyParser = require("body-parser");
 const morgan = require("morgan");
 const http = require("http");
 const server = http.createServer(app);
-const options = {
-  /* ... */
-};
-const io = require("socket.io")(server, options);
 
 const authRoute = require("./routes/auth");
 const userRoute = require("./routes/user");
@@ -60,21 +56,26 @@ app.use("/chat", chatRoute);
 app.use("/friendRequest", friendRequestRoute);
 
 //socket.io
-const connectedUser = new Set();
+const io = require("socket.io")(server, {
+  cors: {
+    origin: "*",
+  },
+});
 io.on("connection", (socket) => {
-  console.log("new client connected" + socket.id);
-  connectedUser.add(socket.id);
-  io.emit("connected-user", connectedUser.size);
-
-  socket.on("disconnect", (client) => {
-    console.log("client disconnected");
-    connectedUser.delete(socket.id);
-    io.emit("connected-user", connectedUser.size);
+  socket.on("sendDataClient", function (data) {
+    // // Handle khi có sự kiện tên là sendDataClient từ phía client
+    // io.emit("sendDataServer", { data }); // phát sự kiện  có tên sendDataServer cùng với dữ liệu tin nhắn từ phía server
+    console.log(data);
   });
 
-  socket.on("message", (data) => {
-    console.log(data);
-    socket.broadcast.emit("message-receive", data);
+  socket.on("sendFriendRequest", () => {
+    console.log("sendFriendRequest");
+    socket.broadcast.emit("getFriendRequest", "getFriendRequest");
+  });
+
+  socket.on("sendacceptFriendRequest", () => {
+    console.log("acceptFriendRequest");
+    socket.broadcast.emit("acceptFriendRequest", "acceptFriendRequest");
   });
 });
 

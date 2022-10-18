@@ -19,25 +19,29 @@ const postController = {
     try {
       const posts = await Post.find({
         is_deleted: false,
-      }).populate("created_by");
+      })
+        .populate("created_by")
+        .populate("likes")
+        .populate("comments");
       res.status(200).json(posts);
     } catch (error) {
       res.status(500).json(error.message);
     }
   },
 
-  //Delete post
-  // deletePost: async (req, res) => {
-  //   try {
-  //     await Post.updateMany({ matches: req.body.id }, { matches: null });
-  //     await Post.findByIdAndDelete(req.body.id);
-  //     res.status(200).json("Deleted successfully!");
-  //   } catch (err) {
-  //     res.status(500).json(err);
-  //   }
-  // },
+  //get post
+  getPost: async (req, res) => {
+    try {
+      const posts = await Post.findById(req.params.id)
+        .populate("created_by")
+        .populate("likes")
+        .populate("comments");
+      res.status(200).json(posts);
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
+  },
 
-  //Delete post with is_deleted
   deletePost: async (req, res) => {
     try {
       await Post.updateMany({ matches: req.body.id }, { matches: null });
@@ -53,8 +57,18 @@ const postController = {
   updatePost: async (req, res) => {
     try {
       const post = await Post.findById(req.body.id);
-      console.log(req.body.id);
       await post.updateOne({ $set: req.body });
+      res.status(200).json("Updated successfully!");
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
+  },
+
+  //Comment post
+  commentPost: async (req, res) => {
+    try {
+      const post = await Post.findById(req.body.id);
+      await post.updateOne({ $push: { comments: req.body.postid } });
       res.status(200).json("Updated successfully!");
     } catch (error) {
       res.status(500).json(error.message);
