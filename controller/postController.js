@@ -21,7 +21,6 @@ const postController = {
         is_deleted: false,
       })
         .populate("created_by")
-        .populate("likes")
         .populate("comments");
       res.status(200).json(posts);
     } catch (error) {

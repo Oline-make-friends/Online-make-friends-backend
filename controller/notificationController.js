@@ -22,6 +22,7 @@ const notificationController = {
       const savedNotification = await newNotification.save();
       res.status(200).json(savedNotification);
     } catch (error) {
+      console.log(error.message);
       res.status(500).json(error.message);
     }
   },

@@ -20,65 +20,71 @@ const groupRoute = require("./routes/group");
 const chatRoute = require("./routes/chat");
 const friendRequestRoute = require("./routes/friendRequest");
 
-const port = 8000;
-dotenv.config();
-
-const strConnection =
-  "mongodb+srv://duyphong1504:Duyphong1504@cluster0.svap3.mongodb.net/?retryWrites=true&w=majority";
-
-//connect database
-mongoose.connect(strConnection, () => {
-  console.log("Connected to MongoDB");
-});
-
-app.use(bodyParser.json({ limit: "50mb" }));
-app.use(cors());
-app.use(morgan("common"));
-
-app.get("/api", (req, res) => {
-  res.status(200).json("Hello");
-});
-
-//routes
-app.get("/", (req, res) => {
-  res.send("App is running");
-});
-app.use("/auth", authRoute);
-app.use("/user", userRoute);
-app.use("/post", postRoute);
-app.use("/comment", commentRoute);
-app.use("/sendMail", mailRoute);
-app.use("/noti", notificationRoute);
-app.use("/message", messageRoute);
-app.use("/report", reportRoute);
-app.use("/group", groupRoute);
-app.use("/chat", chatRoute);
-app.use("/friendRequest", friendRequestRoute);
-
 //socket.io
-const io = require("socket.io")(server, {
-  cors: {
-    origin: "*",
-  },
-});
-io.on("connection", (socket) => {
-  socket.on("sendDataClient", function (data) {
-    // // Handle khi có sự kiện tên là sendDataClient từ phía client
-    // io.emit("sendDataServer", { data }); // phát sự kiện  có tên sendDataServer cùng với dữ liệu tin nhắn từ phía server
-    console.log(data);
+try {
+  const port = 8000;
+  dotenv.config();
+
+  const strConnection =
+    "mongodb+srv://duyphong1504:Duyphong1504@cluster0.svap3.mongodb.net/?retryWrites=true&w=majority";
+
+  //connect database
+  mongoose.connect(strConnection, () => {
+    console.log("Connected to MongoDB");
   });
 
-  socket.on("sendFriendRequest", () => {
-    console.log("sendFriendRequest");
-    socket.broadcast.emit("getFriendRequest", "getFriendRequest");
+  app.use(bodyParser.json({ limit: "50mb" }));
+  app.use(cors());
+  app.use(morgan("common"));
+
+  app.get("/api", (req, res) => {
+    res.status(200).json("Hello");
   });
 
-  socket.on("sendacceptFriendRequest", () => {
-    console.log("acceptFriendRequest");
-    socket.broadcast.emit("acceptFriendRequest", "acceptFriendRequest");
+  //routes
+  app.get("/", (req, res) => {
+    res.send("App is running");
   });
-});
+  app.use("/auth", authRoute);
+  app.use("/user", userRoute);
+  app.use("/post", postRoute);
+  app.use("/comment", commentRoute);
+  app.use("/sendMail", mailRoute);
+  app.use("/noti", notificationRoute);
+  app.use("/message", messageRoute);
+  app.use("/report", reportRoute);
+  app.use("/group", groupRoute);
+  app.use("/chat", chatRoute);
+  app.use("/friendRequest", friendRequestRoute);
+  const io = require("socket.io")(server, {
+    cors: {
+      origin: "*",
+    },
+  });
+  io.on("connection", (socket) => {
+    socket.on("sendDataClient", function (data) {
+      // // Handle khi có sự kiện tên là sendDataClient từ phía client
+      // io.emit("sendDataServer", { data }); // phát sự kiện  có tên sendDataServer cùng với dữ liệu tin nhắn từ phía server
+      console.log(data);
+    });
 
-server.listen(process.env.PORT || port, () => {
-  console.log("Server is running... at port " + port);
-});
+    socket.on("sendFriendRequest", () => {
+      socket.broadcast.emit("getFriendRequest", "getFriendRequest");
+    });
+
+    socket.on("sendacceptFriendRequest", () => {
+      socket.broadcast.emit("acceptFriendRequest", "acceptFriendRequest");
+    });
+
+    socket.on("sendNotification", () => {
+      socket.broadcast.emit("getNotification");
+    });
+  });
+
+  server.listen(process.env.PORT || port, () => {
+    console.log("Server is running... at port " + port);
+  });
+  /////////////////////////
+} catch (error) {
+  console.log(error.message);
+}
