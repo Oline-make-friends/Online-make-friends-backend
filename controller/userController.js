@@ -199,11 +199,13 @@ const userController = {
       let transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
-          user: "mklaaicogido123@gmail.com", // generated ethereal user
-          pass: "pfdsjbptjmftnvte", // generated ethereal password
+          user: "onlinemakefriends@gmail.com", // generated ethereal user
+          pass: "ckapnweiblqmuygr", // generated ethereal password
+          // clientId: GOOGLE_MAILER_CLIENT_ID,
+          // clientSecret: GOOGLE_MAILER_CLIENT_SECRET,
         },
       });
-      const result = Math.random().toString(36).substring(2, 10);
+      const random = Math.random().toString(36).substring(1, 30);
 
       const user = await User.findOne({
         username: req.params.username,
@@ -212,36 +214,26 @@ const userController = {
         return res.status(500).json("can not find user");
       }
 
-      await user.updateOne({ password: result });
+      // await user.updateOne({ password: result });
 
       // send mail with defined transport object
-      await transporter.sendMail(
-        {
-          from: "mklaaicogido123@gmail.com", // sender address
-          to: email, // list of receivers
-          subject: "Reset Password", // Subject line
-          text: "Hello world?", // plain text body
-          html: `<b>Xin chào ${user.fullname} </b>\n
-        <p>Theo yêu cầu của bạn, gửi lại bạn thông tin mật mã tài khoản </p>\n
-        <p><b>Password</b>: ${result}</p>\n
-        <p>Cám ơn bạn và chúc bạn một ngày tốt lành.</p>
+      await transporter.sendMail({
+        from: "onlinemakefriends@gmail.com", // sender address
+        to: email, // list of receivers
+        subject: "Reset Password", // Subject line
+        text: "Hello world?", // plain text body
+        html: `<b>Hi ${user.fullname} </b>\n
+        <p>We heard that you lost your password. 
+
+        But don’t worry! You can use the following link to reset your password: </p>\n
+        <a href="http://localhost:3000/LinkResetPS/${user._id}/${random}">Reset password</a>\n
+        <p>Thanks,</p>
         
         `, // html body
-        },
-        (err) => {
-          if (err) {
-            return res.json({
-              message: "Lỗi",
-              err,
-            });
-          }
-          return res.json({
-            message: `Đã gửi mail thành công cho tài khoản ${email}`,
-          });
-        }
-      );
-      res.status(200).json(result);
+      });
+      res.status(200).json("Success");
     } catch (error) {
+      console.log(error.message);
       res.status(500).json(error.message);
     }
   },
@@ -258,8 +250,10 @@ const userController = {
       let transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
-          user: "mklaaicogido123@gmail.com", // generated ethereal user
-          pass: "pfdsjbptjmftnvte", // generated ethereal password
+          user: "onlinemakefriends@gmail.com", // generated ethereal user
+          pass: "ckapnweiblqmuygr", // generated ethereal password
+          // clientId: GOOGLE_MAILER_CLIENT_ID,
+          // clientSecret: GOOGLE_MAILER_CLIENT_SECRET,
         },
       });
       // send mail with defined transport object

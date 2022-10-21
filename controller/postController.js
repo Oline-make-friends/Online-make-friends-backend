@@ -43,8 +43,7 @@ const postController = {
 
   deletePost: async (req, res) => {
     try {
-      await Post.updateMany({ matches: req.body.id }, { matches: null });
-      const post = await Post.findById(req.body.id);
+      const post = await Post.findById(req.params.id);
       await post.updateOne({ $set: { is_deleted: true } });
       res.status(200).json("Deleted successfully!");
     } catch (err) {
@@ -114,7 +113,8 @@ const postController = {
     try {
       const posts = await Post.find({
         content: { $regex: req.body.hashtag },
-      });
+        is_deleted: false,
+      }).populate("created_by");
       res.status(200).json(posts);
     } catch (error) {
       res.status(500).json(error.message);

@@ -4,14 +4,17 @@ const groupController = require("../controller/groupController");
 //get All group
 router.get("/getAll", groupController.getAllGroups);
 
+//get GROUP by id
+router.get("/get/:id", groupController.getGroupByID);
+
 //Add group
-router.post("/add",groupController.createGroup);
+router.post("/add", groupController.createGroup);
 
 //add member to group
-router.post("/addMember",groupController.addMemberToGroup);
+router.post("/addMember", groupController.addMemberToGroup);
 
 //delete member from group
-router.post("/deleteMember",groupController.deleteMemberInGroup);
+router.post("/deleteMember", groupController.deleteMemberInGroup);
 
 //delete group
 router.post("/delete", groupController.deleteGroup);
