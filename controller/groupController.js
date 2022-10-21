@@ -9,6 +9,7 @@ const groupController = {
     try {
       const newGroup = new Group(req.body);
       const saveGroup = await newGroup.save();
+      await saveGroup.updateOne({ $push: { admins: req.body.userid } });
       res.status(200).json(saveGroup);
     } catch (error) {
       res.status(500).json(error.message);
