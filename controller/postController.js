@@ -113,7 +113,8 @@ const postController = {
     try {
       const posts = await Post.find({
         content: { $regex: req.body.hashtag },
-      });
+        is_deleted: false,
+      }).populate("created_by");
       res.status(200).json(posts);
     } catch (error) {
       res.status(500).json(error.message);
