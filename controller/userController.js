@@ -20,7 +20,7 @@ const userController = {
     try {
       const { username, password } = req.body;
       const user = await User.findOne({
-        user_name: username,
+        username: username,
         password: password,
       })
         .populate("friends")
@@ -54,7 +54,7 @@ const userController = {
   //GET ALL Account
   getAllAccount: async (req, res) => {
     try {
-      const users = await User.find().populate("friends");
+      const users = await User.find().select("-password").populate("friends");
       res.status(200).json(users);
     } catch (error) {
       res.status(500).json(error.message);
