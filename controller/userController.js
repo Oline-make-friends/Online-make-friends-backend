@@ -22,6 +22,7 @@ const userController = {
       const user = await User.findOne({
         username: username,
         password: password,
+        is_active: true,
       })
         .populate("friends")
         .populate("follows");
