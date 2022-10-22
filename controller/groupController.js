@@ -19,9 +19,7 @@ const groupController = {
   //get All groups
   getAllGroups: async (req, res) => {
     try {
-      const groups = await (
-        await Group.find().populate("members")
-      ).populate("admins");
+      const groups = await Group.find().populate("members").populate("admins");
       res.status(200).json(groups);
     } catch (error) {
       console.log(error.message);
@@ -33,8 +31,8 @@ const groupController = {
   getGroupByID: async (req, res) => {
     try {
       const group = await Group.findById(req.params.id)
-        .populate("posts")
-        .populate("members");
+        .populate("members")
+        .populate("admins");
       res.status(200).json(group);
     } catch (error) {
       res.status(500).json(error.message);
