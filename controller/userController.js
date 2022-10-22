@@ -20,8 +20,9 @@ const userController = {
     try {
       const { username, password } = req.body;
       const user = await User.findOne({
-        user_name: username,
+        username: username,
         password: password,
+        is_active: true,
       })
         .populate("friends")
         .populate("follows");
@@ -54,7 +55,7 @@ const userController = {
   //GET ALL Account
   getAllAccount: async (req, res) => {
     try {
-      const users = await User.find().populate("friends");
+      const users = await User.find().select("-password").populate("friends");
       res.status(200).json(users);
     } catch (error) {
       res.status(500).json(error.message);
@@ -295,7 +296,7 @@ const userController = {
         sender_id: req.body.sender_id,
         receiver_id: req.body.receiver_id,
       });
-      console.log(friend.friends.includes(req.body.sender_id));
+
       if (check.length > 0) {
         // await friend.updateOne({ $pull: { friends_request: req.body._id } });
         return res.status(200).json("You already request this friend!");
