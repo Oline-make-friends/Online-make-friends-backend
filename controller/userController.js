@@ -22,15 +22,19 @@ const userController = {
       const user = await User.findOne({
         username: username,
         password: password,
-        is_active: true,
       })
         .populate("friends")
         .populate("follows");
+      if (user.is_active === false) {
+        console.log("This account has been baned");
+        return res.status(200).json("This account has been baned");
+      }
       if (!user) {
         return res.status(500).json("Username or password is wrong!");
       }
       res.status(200).json(user);
     } catch (error) {
+      console.log(error.message);
       res.status(500).json(error.message);
     }
   },
@@ -43,6 +47,10 @@ const userController = {
       })
         .populate("friends")
         .populate("follows");
+      if (user.is_active === false) {
+        console.log("This account has been baned");
+        return res.status(200).json("This account has been baned");
+      }
       if (!user) {
         return res.status(500).json("Can not find account, please sign up");
       }
