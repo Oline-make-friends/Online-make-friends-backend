@@ -243,7 +243,8 @@ const userController = {
   sendEmailContact: async (req, res) => {
     try {
       const name = req.body.firstName + req.body.lastName;
-      const email = req.body.email;
+      const senderEmail = req.body.senderEmail;
+      const receiverEmail = req.body.receiverEmail;
       const message = req.body.message;
       const phone = req.body.phone;
       // create reusable transporter object using the default SMTP transport
@@ -260,10 +261,10 @@ const userController = {
       await transporter.sendMail(
         {
           from: name,
-          to: "********@gmail.com",
+          to: receiverEmail,
           subject: "Contact Online makes friend",
           html: `<p>Name: ${name}</p>
-           <p>Email: ${email}</p>
+           <p>Email: ${senderEmail}</p>
            <p>Phone: ${phone}</p>
            <p>Message: ${message}</p>`,
         },
