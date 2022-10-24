@@ -18,6 +18,7 @@ const messageRoute = require("./routes/message");
 const reportRoute = require("./routes/report");
 const groupRoute = require("./routes/group");
 const chatRoute = require("./routes/chat");
+const eventRoute = require("./routes/event");
 const friendRequestRoute = require("./routes/friendRequest");
 
 //socket.io
@@ -56,6 +57,7 @@ try {
   app.use("/group", groupRoute);
   app.use("/chat", chatRoute);
   app.use("/friendRequest", friendRequestRoute);
+  app.use("/event", eventRoute);
   const io = require("socket.io")(server, {
     cors: {
       origin: "*",

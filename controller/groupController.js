@@ -10,6 +10,7 @@ const groupController = {
       const newGroup = new Group(req.body);
       const saveGroup = await newGroup.save();
       await saveGroup.updateOne({ $push: { admins: req.body.userid } });
+      await saveGroup.updateOne({ $push: { members: req.body.userid } });
       res.status(200).json(saveGroup);
     } catch (error) {
       res.status(500).json(error.message);
@@ -27,7 +28,7 @@ const groupController = {
     }
   },
 
-  //get All groups
+  //get  group by id
   getGroupByID: async (req, res) => {
     try {
       const group = await Group.findById(req.params.id)
