@@ -11,6 +11,7 @@ router.get("/getAllUser", userController.getAllUser);
 router.post("/getUserByEmail/:email", userController.getUserbyEmail);
 
 router.post("/getUser/:id", userController.getUser);
+
 router.post("/blockUser/:id", userController.blockUser);
 //update User
 router.post("/update/:id", userController.updateUserProfile);

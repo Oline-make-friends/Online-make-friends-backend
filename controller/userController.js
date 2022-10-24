@@ -63,7 +63,10 @@ const userController = {
   //GET ALL Account
   getAllAccount: async (req, res) => {
     try {
-      const users = await User.find().select("-password").populate("friends");
+      const users = await User.find()
+        .select("-password")
+        .populate("friends")
+        .populate("follows");
       res.status(200).json(users);
     } catch (error) {
       res.status(500).json(error.message);
@@ -156,12 +159,14 @@ const userController = {
     }
   },
 
-  //get User by username
+  //get User by email
   getUserbyEmail: async (req, res) => {
     try {
       const user = await User.find({
         username: req.params.email,
-      });
+      })
+        .populate("follows")
+        .populate("friends");
       res.status(200).json(user);
     } catch (error) {
       res.status(500).json(error);

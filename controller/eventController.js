@@ -5,7 +5,21 @@ const eventController = {
   //get All event
   getAllEvent: async (req, res) => {
     try {
-      const events = await Event.find();
+      const events = await Event.find()
+        .populate("user_joined")
+        .populate("created_by");
+      res.status(200).json(events);
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
+  },
+
+  //get event by id
+  getEvent: async (req, res) => {
+    try {
+      const events = await Event.findById(req.params.id)
+        .populate("user_joined")
+        .populate("created_by");
       res.status(200).json(events);
     } catch (error) {
       res.status(500).json(error.message);
@@ -37,7 +51,7 @@ const eventController = {
   //Delete event
   deleteEvent: async (req, res) => {
     try {
-      await Event.updateMany({ matches: req.body.id }, { matches: null });
+      await Event.updateMany({ matches: req.body.id });
       await Event.findByIdAndDelete(req.body.id);
       res.status(200).json("Deleted successfully!");
     } catch (error) {

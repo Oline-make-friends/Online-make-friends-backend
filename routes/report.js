@@ -4,6 +4,9 @@ const reportController = require("../controller/reportController");
 //get All Report
 router.get("/getAll", reportController.getAllReport);
 
+//get user Report
+router.get("/getUser/:id", reportController.getAllReport);
+
 //create Report
 router.post("/add", reportController.createReport);
 
