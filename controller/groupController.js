@@ -158,8 +158,17 @@ const groupController = {
         } catch (error) {
             res.status(500).json(error.message);
         }
-    }
+    },
 
+    updateMember: async (req, res) => {
+        try {
+            const member = await Group.findOne({members: req.body.idMember});
+            
+        } catch (error) {
+            res.status(200).json(error.message);
+            
+        }
+    }
 
 }
 
