@@ -20,7 +20,7 @@ const groupController = {
   //get All groups
   getAllGroups: async (req, res) => {
     try {
-      const groups = await Group.find().populate("members").populate("admins");
+      const groups = await Group.find();
       res.status(200).json(groups);
     } catch (error) {
       console.log(error.message);
