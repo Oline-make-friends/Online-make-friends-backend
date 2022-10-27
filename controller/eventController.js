@@ -64,6 +64,22 @@ const eventController = {
         } catch (error) {
             res.status(500).json(error.message);
         }
+    },
+
+    //join Event
+    joinEvent: async (req, res) => {
+        try {
+            const event = await Event.findById(req.body._id);
+            const user = await User.findOne({ username: req.body.username });
+            if (event.user_joined.includes(user._id)) {
+                res.status(200).json("You already joined this event");
+            } else {
+                await event.updateOne({ $push: { user_joined: user._id } });
+                res.status(200).json("Joined successfully");
+            }
+        } catch (error) {
+            res.status(500).json(error.message);
+        }
     }
 
 };
