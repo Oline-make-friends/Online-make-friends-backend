@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const groupSchema = new mongoose.Schema(
+
   {
     admins: [
       {
@@ -31,6 +32,12 @@ const groupSchema = new mongoose.Schema(
         ref: "Post",
       },
     ],
+    groups_request: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "User",
+            },
+        ],
     members: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -39,6 +46,7 @@ const groupSchema = new mongoose.Schema(
     ],
   },
   { timestamps: true }
+
 );
 
 let Group = mongoose.model("Group", groupSchema);

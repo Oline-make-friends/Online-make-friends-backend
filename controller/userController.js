@@ -365,7 +365,22 @@ const userController = {
     }
   },
 
-  //getFriendRequestModel
+
+  unfollowUser: async (req, res) => {
+    try {
+      const user = await User.findOne({ username: req.body.username });
+      if (user.follows.includes(req.body._id)) {
+        await user.updateOne({ $pull: { follows: req.body._id } });
+        res.status(200).json("Unfollowed successfully!");
+      } else {
+        res.status(200).json("You are not follow this user yet!");
+      }
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
+  },
+  
+  //getFriendRequestModel để test coi có tạo chưa
   getRequestFriendRequestModel: async (req, res) => {
     try {
       const reqFrs = await FriendRequest.find({

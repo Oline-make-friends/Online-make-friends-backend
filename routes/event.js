@@ -22,4 +22,7 @@ router.post("/getEventCreated", eventController.getAllUserEventCreated);
 //get events user joined
 router.post("/getEventJoined", eventController.getAllUserEventJoined);
 
+//join event
+router.post("/joinEvent", eventController.joinEvent);
+
 module.exports = router;

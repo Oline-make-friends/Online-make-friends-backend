@@ -59,6 +59,7 @@ const eventController = {
     }
   },
 
+
   //Get all event user created
   getAllUserEventCreated: async (req, res) => {
     try {
@@ -67,8 +68,35 @@ const eventController = {
       res.status(200).json(events);
     } catch (error) {
       res.status(500).json(error.message);
-    }
+      }
   },
+
+    //Get all event user joined
+    getAllUserEventJoined: async (req, res) => {
+        try {
+            const user = await User.findOne({ username: req.body.username });
+            const events = await Event.find({ user_joined: user._id });
+        } catch (error) {
+            res.status(500).json(error.message);
+        }
+    },
+
+    //join Event
+    joinEvent: async (req, res) => {
+        try {
+            const event = await Event.findById(req.body._id);
+            const user = await User.findOne({ username: req.body.username });
+            if (event.user_joined.includes(user._id)) {
+                res.status(200).json("You already joined this event");
+            } else {
+                await event.updateOne({ $push: { user_joined: user._id } });
+                res.status(200).json("Joined successfully");
+            }
+        } catch (error) {
+            res.status(500).json(error.message);
+        }
+
+   
 
   //Get all event user joined
   getAllUserEventJoined: async (req, res) => {
