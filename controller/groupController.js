@@ -21,7 +21,15 @@ const groupController = {
   //get All groups
   getAllGroups: async (req, res) => {
     try {
-      const groups = await Group.find().populate("posts");
+      const groups = await Group.find()
+        .populate("posts")
+        .populate({
+          path: "posts",
+          populate: {
+            path: "created_by",
+            model: "User",
+          },
+        });
       res.status(200).json(groups);
     } catch (error) {
       console.log(error.message);
@@ -35,7 +43,13 @@ const groupController = {
       const group = await Group.findById(req.params.id)
         .populate("members")
         .populate("admins")
-        .populate("posts");
+        .populate({
+          path: "posts",
+          populate: {
+            path: "created_by",
+            model: "User",
+          },
+        });
       res.status(200).json(group);
     } catch (error) {
       res.status(500).json(error.message);
