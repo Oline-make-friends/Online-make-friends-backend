@@ -17,7 +17,6 @@ const notificationRoute = require("./routes/notification");
 const messageRoute = require("./routes/message");
 const reportRoute = require("./routes/report");
 const groupRoute = require("./routes/group");
-
 const chatRoute = require("./routes/chat");
 const eventRoute = require("./routes/event");
 const friendRequestRoute = require("./routes/friendRequest");
@@ -71,23 +70,9 @@ try {
       console.log(data);
     });
 
-
     socket.on("sendFriendRequest", () => {
       socket.broadcast.emit("getFriendRequest", "getFriendRequest");
     });
-
-//routes
-app.use("/auth", authRoute);
-app.use("/user", userRoute);
-app.use("/post", postRoute);
-app.use("/comment", commentRoute);
-app.use("/sendMail", mailRoute);
-app.use("/noti", notificationRoute);
-app.use("/message", messageRoute);
-app.use("/report", reportRoute);
-app.use("/group", groupRoute);
-app.use("/event", eventRoute);
-
 
     socket.on("sendacceptFriendRequest", () => {
       socket.broadcast.emit("acceptFriendRequest", "acceptFriendRequest");
