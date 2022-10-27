@@ -1,23 +1,14 @@
 const mongoose = require("mongoose");
 
-const messageSchema = new mongoose.Schema(
+const messageSchema = mongoose.Schema(
   {
-    fromUser_id: { //id của người gửi
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
-    to_conversation_id: { // id của đoạn hồi thoại
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Conversation",
-    },
-    content: {
-      type: String,
-    },
+    sender: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    content: { type: String, trim: true },
+    chat: { type: mongoose.Schema.Types.ObjectId, ref: "Chat" },
+    readBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
 const Message = mongoose.model("Message", messageSchema);
-module.exports = { Message };
+module.exports = Message;

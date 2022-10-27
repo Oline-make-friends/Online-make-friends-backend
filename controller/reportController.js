@@ -24,6 +24,19 @@ const reportController = {
     }
   },
 
+  //get user reports
+  getUserReport: async (req, res) => {
+    try {
+      const reports = await Report.find({
+        sent_by: req.params.id,
+        is_deleted: false,
+      }).populate("sent_by");
+      res.status(200).json(reports);
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
+  },
+
   //delete report
   deleteReport: async (req, res) => {
     try {

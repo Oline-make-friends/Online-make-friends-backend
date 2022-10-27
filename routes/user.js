@@ -11,6 +11,7 @@ router.get("/getAllUser", userController.getAllUser);
 router.post("/getUserByEmail/:email", userController.getUserbyEmail);
 
 router.post("/getUser/:id", userController.getUser);
+
 router.post("/blockUser/:id", userController.blockUser);
 //update User
 router.post("/update/:id", userController.updateUserProfile);
@@ -32,11 +33,13 @@ router.post("/requestFriend", userController.requestFriend);
 
 //follow user
 router.post("/followUser", userController.followUser);
+//unfollow user
+router.post("/unfollow", userController.unFollowUser);
 
 //unfollow user
 router.post("/unfollowUser", userController.unfollowUser);
 
 //getAllFriendRequest
-router.get("/getFrRq", userController.getRequestFriendRequestModel);
+router.post("/getFrRq", userController.getRequestFriendRequestModel);
 
 module.exports = router;

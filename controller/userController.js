@@ -1,6 +1,7 @@
 const { User } = require("../model/user");
 const nodemailer = require("nodemailer");
 const { FriendRequest } = require("../model/friendRequest");
+const { json } = require("express");
 
 const userController = {
   //Register user
@@ -19,14 +20,21 @@ const userController = {
     try {
       const { username, password } = req.body;
       const user = await User.findOne({
-        user_name: username,
+        username: username,
         password: password,
-      });
+      })
+        .populate("friends")
+        .populate("follows");
+      if (user.is_active === false) {
+        console.log("This account has been baned");
+        return res.status(200).json("This account has been baned");
+      }
       if (!user) {
         return res.status(500).json("Username or password is wrong!");
       }
       res.status(200).json(user);
     } catch (error) {
+      console.log(error.message);
       res.status(500).json(error.message);
     }
   },
@@ -36,7 +44,13 @@ const userController = {
     try {
       const user = await User.findOne({
         username: req.params.email,
-      });
+      })
+        .populate("friends")
+        .populate("follows");
+      if (user.is_active === false) {
+        console.log("This account has been baned");
+        return res.status(200).json("This account has been baned");
+      }
       if (!user) {
         return res.status(500).json("Can not find account, please sign up");
       }
@@ -49,7 +63,10 @@ const userController = {
   //GET ALL Account
   getAllAccount: async (req, res) => {
     try {
-      const users = await User.find().populate("friends");
+      const users = await User.find()
+        .select("-password")
+        .populate("friends")
+        .populate("follows");
       res.status(200).json(users);
     } catch (error) {
       res.status(500).json(error.message);
@@ -59,7 +76,9 @@ const userController = {
   //GET ALL User
   getAllUser: async (req, res) => {
     try {
-      const users = await User.find({ is_admin: false }).populate("friends");
+      const users = await User.find({ is_admin: false })
+        .populate("friends")
+        .populate("follows");
       res.status(200).json(users);
     } catch (error) {
       res.status(500).json(error.message);
@@ -115,8 +134,9 @@ const userController = {
   //Add friend
   addFriends: async (req, res) => {
     try {
-      const user = await User.findById(req.body.id);
-      const friend = await User.findById(req.body.friend);
+      const user = await User.findById(req.body.sender_id);
+
+      const friend = await User.findById(req.body.receiver_id);
       await user.updateOne({ $push: { friends: friend._id } });
       await friend.updateOne({ $push: { friends: user._id } });
       res.status(200).json("Add friend Success!");
@@ -128,9 +148,9 @@ const userController = {
   //Delete friend
   deleteFriends: async (req, res) => {
     try {
-      const user = await User.findById(req.body.id);
+      const user = await User.findById(req.body.sender_id);
 
-      const friend = await User.findById(req.body.friend);
+      const friend = await User.findById(req.body.receiver_id);
       await user.updateOne({ $pull: { friends: friend._id } });
       await friend.updateOne({ $pull: { friends: user._id } });
       res.status(200).json("Delete friend Success!");
@@ -139,12 +159,14 @@ const userController = {
     }
   },
 
-  //get User by username
+  //get User by email
   getUserbyEmail: async (req, res) => {
     try {
       const user = await User.find({
         username: req.params.email,
-      });
+      })
+        .populate("follows")
+        .populate("friends");
       res.status(200).json(user);
     } catch (error) {
       res.status(500).json(error);
@@ -157,7 +179,9 @@ const userController = {
     try {
       const user = await User.findOne({
         _id: req.params.id,
-      });
+      })
+        .populate("friends")
+        .populate("follows");
       res.status(200).json(user);
     } catch (error) {
       res.status(500).json(error);
@@ -189,11 +213,13 @@ const userController = {
       let transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
-          user: "mklaaicogido123@gmail.com", // generated ethereal user
-          pass: "pfdsjbptjmftnvte", // generated ethereal password
+          user: "onlinemakefriends@gmail.com", // generated ethereal user
+          pass: "ckapnweiblqmuygr", // generated ethereal password
+          // clientId: GOOGLE_MAILER_CLIENT_ID,
+          // clientSecret: GOOGLE_MAILER_CLIENT_SECRET,
         },
       });
-      const result = Math.random().toString(36).substring(2, 10);
+      const random = Math.random().toString(36).substring(1, 30);
 
       const user = await User.findOne({
         username: req.params.username,
@@ -202,36 +228,26 @@ const userController = {
         return res.status(500).json("can not find user");
       }
 
-      await user.updateOne({ password: result });
+      // await user.updateOne({ password: result });
 
       // send mail with defined transport object
-      await transporter.sendMail(
-        {
-          from: "mklaaicogido123@gmail.com", // sender address
-          to: email, // list of receivers
-          subject: "Reset Password", // Subject line
-          text: "Hello world?", // plain text body
-          html: `<b>Xin chào ${user.fullname} </b>\n
-        <p>Theo yêu cầu của bạn, gửi lại bạn thông tin mật mã tài khoản </p>\n
-        <p><b>Password</b>: ${result}</p>\n
-        <p>Cám ơn bạn và chúc bạn một ngày tốt lành.</p>
+      await transporter.sendMail({
+        from: "onlinemakefriends@gmail.com", // sender address
+        to: email, // list of receivers
+        subject: "Reset Password", // Subject line
+        text: "Hello world?", // plain text body
+        html: `<b>Hi ${user.fullname} </b>\n
+        <p>We heard that you lost your password. 
+
+        But don’t worry! You can use the following link to reset your password: </p>\n
+        <a href="http://localhost:3000/LinkResetPS/${user._id}/${random}">Reset password</a>\n
+        <p>Thanks,</p>
         
         `, // html body
-        },
-        (err) => {
-          if (err) {
-            return res.json({
-              message: "Lỗi",
-              err,
-            });
-          }
-          return res.json({
-            message: `Đã gửi mail thành công cho tài khoản ${email}`,
-          });
-        }
-      );
-      res.status(200).json(result);
+      });
+      res.status(200).json("Success");
     } catch (error) {
+      console.log(error.message);
       res.status(500).json(error.message);
     }
   },
@@ -241,25 +257,28 @@ const userController = {
   sendEmailContact: async (req, res) => {
     try {
       const name = req.body.firstName + req.body.lastName;
-      const email = req.body.email;
+      const senderEmail = req.body.senderEmail;
+      const receiverEmail = req.body.receiverEmail;
       const message = req.body.message;
       const phone = req.body.phone;
       // create reusable transporter object using the default SMTP transport
       let transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
-          user: "mklaaicogido123@gmail.com", // generated ethereal user
-          pass: "pfdsjbptjmftnvte", // generated ethereal password
+          user: "onlinemakefriends@gmail.com", // generated ethereal user
+          pass: "ckapnweiblqmuygr", // generated ethereal password
+          // clientId: GOOGLE_MAILER_CLIENT_ID,
+          // clientSecret: GOOGLE_MAILER_CLIENT_SECRET,
         },
       });
       // send mail with defined transport object
       await transporter.sendMail(
         {
           from: name,
-          to: "********@gmail.com",
+          to: receiverEmail,
           subject: "Contact Online makes friend",
           html: `<p>Name: ${name}</p>
-           <p>Email: ${email}</p>
+           <p>Email: ${senderEmail}</p>
            <p>Phone: ${phone}</p>
            <p>Message: ${message}</p>`,
         },
@@ -284,18 +303,23 @@ const userController = {
   //request add friend
   requestFriend: async (req, res) => {
     try {
-      const friend = await User.findOne({ username: req.body.username }); //lấy User của người được gửi kết bạn
-      if (friend.friends_request.includes(req.body._id)) {
-        // await friend.updateOne({ $pull: { friends_request: req.body._id } }); 
-        res.status(200).json("You already request this friend!");
+      const friend = await User.findById(req.body.sender_id); //lấy User của người được gửi kết bạn
+
+      const check = await FriendRequest.find({
+        sender_id: req.body.sender_id,
+        receiver_id: req.body.receiver_id,
+      });
+
+      if (check.length > 0) {
+        // await friend.updateOne({ $pull: { friends_request: req.body._id } });
+        return res.status(200).json("You already request this friend!");
+      } else if (friend.friends.includes(req.body.sender_id)) {
+        return res.status(200).json("You already request this friend!");
       } else {
-        const newRqFr = new FriendRequest({
-          sender_id: req.body._id,
-          receiver_id: friend._id,
-        });
-        newRqFr.save();
-        await friend.updateOne({ $push: { friends_request: req.body._id } }); //bỏ id của người gửi kb vào fr_req của người được gửi kết bạn
-        res.status(200).json("Requested successfully!");
+        const newRqFr = new FriendRequest(req.body);
+        const saveRqFr = await newRqFr.save();
+        // await friend.updateOne({ $push: { friends_request: req.body._id } }); //bỏ id của người gửi kb vào fr_req của người được gửi kết bạn
+        return res.status(200).json(saveRqFr);
       }
     } catch (error) {
       res.status(500).json(error.message);
@@ -305,17 +329,42 @@ const userController = {
   // follow user
   followUser: async (req, res) => {
     try {
-      const user = await User.findOne({ username: req.body.username });
-      if (user.follows.includes(req.body._id)) {
+      const user = await User.findById(req.body.currentUser_id);
+      if (user.follows.includes(req.body.follower_id)) {
         res.status(200).json("You already follow this user!");
       } else {
-        await user.updateOne({ $push: { follows: req.body._id } });
+        await user.updateOne({ $push: { follows: req.body.follower_id } });
         res.status(200).json("Followed successfully!");
       }
     } catch (error) {
       res.status(500).json(error.message);
     }
   },
+  // // unfollow user
+  // unFollowUser: async (req, res) => {
+  //   try {
+  //     const user = await User.findById(req.body.currentUser_id);
+  //     console.log(user);
+  //     await user.updateOne({ $pull: { follows: req.body.id } });
+  //     res.status(200).json("Unfollow successfully!");
+  //   } catch (error) {
+  //     res.status(500).json(error.message);
+  //   }
+  // },
+
+  // unfollow user
+  unFollowUser: async (req, res) => {
+    try {
+      const user = await User.findById(req.body.currentUser_id);
+
+      // const follower = await User.findById(req.body.id);
+      await user.updateOne({ $pull: { follows: req.body.follower_id } });
+      res.status(200).json("Unfollow Success!");
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
+  },
+
 
   unfollowUser: async (req, res) => {
     try {
@@ -330,16 +379,18 @@ const userController = {
       res.status(500).json(error.message);
     }
   },
-
+  
   //getFriendRequestModel để test coi có tạo chưa
   getRequestFriendRequestModel: async (req, res) => {
     try {
-      const reqFrs = await FriendRequest.find();
+      const reqFrs = await FriendRequest.find({
+        receiver_id: req.body.receiver_id,
+      }).populate("sender_id");
       res.status(200).json(reqFrs);
     } catch (error) {
       res.status(500).json(error.message);
     }
-  }
+  },
 };
 
 module.exports = userController;

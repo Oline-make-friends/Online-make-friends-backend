@@ -5,13 +5,13 @@ const commentController = require("../controller/commentController");
 router.get("/getAll", commentController.getAllComment);
 
 //Add comment
-router.post("/add",commentController.createComment);
+router.post("/add", commentController.createComment);
 
 //Update comment
-router.post("/update",commentController.updateComment);
+router.post("/update/:id", commentController.updateComment);
 
 //delete comment
-router.post("/delete",commentController.deleteComment);
+router.post("/delete", commentController.deleteComment);
 
 //get comment from post
 router.post("/get", commentController.getAllPostComment);
