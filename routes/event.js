@@ -25,4 +25,7 @@ router.post("/getEventJoined", eventController.getAllUserEventJoined);
 //join event
 router.post("/joinEvent", eventController.joinEvent);
 
+//join event
+router.post("/unJoinEvent", eventController.unJoinEvent);
+
 module.exports = router;
