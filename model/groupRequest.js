@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const groupRequest = new mongoose.Schema(
   {
-    user_id: { //user muốn vào group
+    user_id: { //user được mời vào group
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
@@ -20,6 +20,6 @@ const groupRequest = new mongoose.Schema(
   }
 );
 
-let GroupRequest = mongoose.model("groupRequest", groupRequest);
+let GroupRequest = mongoose.model("GroupRequest", groupRequest);
 
 module.exports = { GroupRequest };

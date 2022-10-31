@@ -40,4 +40,16 @@ router.post("/getListAdmin", groupController.getListAdmin);
 //set role admin for user
 router.post("/setRoleAdmin", groupController.setRoleAdmin);
 
+// //kick member
+// router.post("/kickMember", groupController.kickMember);
+
+//delete post
+router.post("/deletePost", groupController.deletePost);
+
+//invite user to join group
+router.post("/inviteToJoinGroup", groupController.inviteToJoinGroup);
+
+//get all invite request
+router.post("/getAllInvite", groupController.getAllInvite);
+
 module.exports = router;

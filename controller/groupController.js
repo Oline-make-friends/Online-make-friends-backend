@@ -3,6 +3,8 @@ const { User } = require("../model/user");
 const { Post } = require("../model/post");
 const postController = require("./postController");
 const { GroupRequest } = require("../model/groupRequest");
+const { InviteGroupRequest } = require("../model/inviteGroupRequest");
+const { createPost } = require("./postController");
 
 const groupController = {
 
@@ -39,7 +41,7 @@ const groupController = {
         }
     },
 
-    //delete member in group
+    //delete member in group (kick member)
     deleteMemberInGroup: async (req, res) => {
         try {
             await Group.updateMany({ matches: req.body.memberId }, { matches: null });
@@ -160,15 +162,83 @@ const groupController = {
         }
     },
 
-    updateMember: async (req, res) => {
+    // //update member
+    // updateMember: async (req, res) => {
+    //     try {
+    //         const member = await Group.findOne({members: req.params.id});
+    //         await member.updateOne({ $set: req.body});
+    //         res.status(200).json("Updated Successfully");
+    //     } catch (error) {
+    //         res.status(200).json(error.message);
+    //     }
+    // },
+
+    //delete post
+    deletePost: async (req, res) => {
         try {
-            const member = await Group.findOne({members: req.body.idMember});
-            
+            const group = await Group.findById(req.body._id);
+            if (group.posts.includes(req.body.idPost)) {
+                await group.updateOne({ $pull: { posts: req.body.idPost } });
+                await Post.updateOne({ _id: req.body.idPost }, { $set: { is_deleted: true } })
+                res.status(200).json("Deleted Successfully");
+            } else {
+                res.status(200).json("This post is not existed in group");
+            }
         } catch (error) {
-            res.status(200).json(error.message);
-            
+            res.status(500).json(error.message);
         }
-    }
+    },
+
+    // //kick member
+    // kickMember: async (req, res) => {
+    //     try {
+    //         const group = await Group.findById(req.body._id);
+    //         if (group.members.includes(req.body.userId)) {
+    //             await group.updateOne({ $pull: { members: req.body.userId } });
+    //             res.status(200).json("Kicked Successfully");
+    //         } else {
+    //             res.status(200).json("This user is not a member of group");
+    //         }
+    //     } catch (error) {
+    //         res.status(500).json(error.message);
+    //     }
+    // },
+
+    //invite user to join Group
+    inviteToJoinGroup: async (req, res) => {
+        try {
+            const user = await User.findOne({ username: req.body.username }); //lấy User của người mình muốn invite vào group
+            const group = await Group.findById(req.body._id); // lấy Group
+            const check = await GroupRequest.find({ // check nếu như user này đã được invite rồi
+                user_id: user._id,
+                group_id: group._id,
+            });
+            if (group.members.includes(user._id)){
+                res.status(200).json("This user is already in group");
+            } else if (check.length > 0) {
+                res.status(200).json("This user is already invited");
+            }else{
+                const newInvGr = new InviteGroupRequest({
+                    group_id: group._id,
+                    user_id: user._id,
+                });
+                newInvGr.save();
+                res.status(200).json("Invited successfully!");
+            }
+        } catch (error) {
+            res.status(500).json(error.message);
+        }
+    },
+
+    //get all invite request
+    getAllInvite: async(req, res) => {
+        try {
+            const InvRqGr = await InviteGroupRequest.find();
+            res.status(200).json(InvRqGr);
+        } catch (error) {
+            res.status(500).json(error.message);
+        }
+    },
 
 }
 
