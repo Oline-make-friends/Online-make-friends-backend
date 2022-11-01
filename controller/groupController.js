@@ -198,6 +198,33 @@ const groupController = {
     }
   },
 
+  //set role admin for user
+  joinGroup: async (req, res) => {
+    try {
+      const group = await Group.findById(req.body._id);
+      if (group.members.includes(req.body.idUser)) {
+        res.status(200).json("you are already member of the group!");
+      } else {
+        await group.updateOne({ $push: { members: req.body.idUser } });
+        res.status(200).json("Join successfully!");
+      }
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
+  },
+
+  //set role admin for user
+  LeaveGroup: async (req, res) => {
+    try {
+      const group = await Group.findById(req.body._id);
+
+      await group.updateOne({ $pull: { members: req.body.idUser } });
+      res.status(200).json("Join successfully!");
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
+  },
+
   updateMember: async (req, res) => {
     try {
       const member = await Group.findOne({ members: req.body.idMember });

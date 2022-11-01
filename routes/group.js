@@ -43,4 +43,10 @@ router.post("/getListAdmin", groupController.getListAdmin);
 //set role admin for user
 router.post("/setRoleAdmin", groupController.setRoleAdmin);
 
+//join group
+router.post("/join", groupController.joinGroup);
+
+//leave group
+router.post("/leave", groupController.LeaveGroup);
+
 module.exports = router;

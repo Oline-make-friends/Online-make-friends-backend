@@ -22,7 +22,7 @@ const postController = {
       })
         .populate("created_by")
         .populate("comments");
-      res.status(200).json(posts);
+      res.status(200).json(posts.reverse());
     } catch (error) {
       res.status(500).json(error.message);
     }
