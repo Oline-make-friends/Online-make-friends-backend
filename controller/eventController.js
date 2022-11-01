@@ -79,6 +79,36 @@ const eventController = {
       res.status(500).json(error.message);
     }
   },
+
+  //join Event
+  joinEvent: async (req, res) => {
+    try {
+      const event = await Event.findById(req.body.eventId);
+      const user = await User.findById(req.body.userId);
+      if (event?.user_joined?.includes(user._id)) {
+        res.status(200).json("You already joined this event");
+      } else {
+        await event.updateOne({ $push: { user_joined: user._id } });
+        res.status(200).json("Joined successfully");
+      }
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).json(error.message);
+    }
+  },
+
+  //join Event
+  unJoinEvent: async (req, res) => {
+    try {
+      const event = await Event.findById(req.body.eventId);
+      const user = await User.findById(req.body.userId);
+      await event.updateOne({ $pull: { user_joined: user._id } });
+      res.status(200).json("Joined successfully");
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).json(error.message);
+    }
+  },
 };
 
 module.exports = eventController;
