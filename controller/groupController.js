@@ -59,9 +59,7 @@ const groupController = {
   //delete group
   deleteGroup: async (req, res) => {
     try {
-      await Group.updateMany({ matches: req.body.id }, { matches: null });
-      const group = await Group.findById(req.body.id);
-      await Group.updateOne({ $set: { is_deleted: true } });
+      await Group.findByIdAndDelete(req.body._id);
       res.status(200).json("Deleted successfully!");
     } catch (error) {
       res.status(500).json(error.message);
@@ -219,7 +217,7 @@ const groupController = {
       const group = await Group.findById(req.body._id);
 
       await group.updateOne({ $pull: { members: req.body.idUser } });
-      res.status(200).json("Join successfully!");
+      res.status(200).json("Leave successfully!");
     } catch (error) {
       res.status(500).json(error.message);
     }
