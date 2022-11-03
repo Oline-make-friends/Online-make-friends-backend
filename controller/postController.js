@@ -19,10 +19,43 @@ const postController = {
     try {
       const posts = await Post.find({
         is_deleted: false,
+        is_group: false,
       })
         .populate("created_by")
         .populate("comments");
-      res.status(200).json(posts);
+      res.status(200).json(posts.reverse());
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
+  },
+
+  //get All posts by type
+  getAllPostbyType: async (req, res) => {
+    try {
+      const posts = await Post.find({
+        is_deleted: false,
+        is_group: false,
+        type: req.body.type,
+      })
+        .populate("created_by")
+        .populate("comments");
+      res.status(200).json(posts.reverse());
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
+  },
+
+  //get All posts by course
+  getAllPostbyCourse: async (req, res) => {
+    try {
+      const posts = await Post.find({
+        is_deleted: false,
+        is_group: false,
+        course: req.body.course,
+      })
+        .populate("created_by")
+        .populate("comments");
+      res.status(200).json(posts.reverse());
     } catch (error) {
       res.status(500).json(error.message);
     }

@@ -64,6 +64,15 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    is_prove: {
+      type: Boolean,
+      default: true,
+    },
+    proveImage_url: {
+      type: String,
+      default:
+        "https://assets.goal.com/v3/assets/bltcc7a7ffd2fbf71f5/blt07d62336ee8ed926/6214ab2690aa357658b8e4cc/18-maguire.jpg",
+    },
     follows: [
       {
         type: mongoose.Schema.Types.ObjectId,

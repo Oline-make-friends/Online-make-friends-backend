@@ -7,12 +7,17 @@ router.get("/getAllAccount", userController.getAllAccount);
 //get All User
 router.get("/getAllUser", userController.getAllUser);
 
+//get All prove account
+router.get("/getAllProveAccount", userController.getAllProveAccount);
+
 //get user by email;
 router.post("/getUserByEmail/:email", userController.getUserbyEmail);
 
 router.post("/getUser/:id", userController.getUser);
 
 router.post("/blockUser/:id", userController.blockUser);
+
+router.post("/proveUser/:id", userController.proveUser);
 //update User
 router.post("/update/:id", userController.updateUserProfile);
 

@@ -4,6 +4,12 @@ const postController = require("../controller/postController");
 //get All Post
 router.get("/getAll", postController.getAllPost);
 
+//get All Post by type
+router.post("/getAllbyType", postController.getAllPostbyType);
+
+//get All Post by course
+router.post("/getAllbyCourse", postController.getAllPostbyCourse);
+
 //get All post user
 router.post("/get/:id", postController.getAllUserPost);
 

@@ -59,9 +59,7 @@ const groupController = {
   //delete group
   deleteGroup: async (req, res) => {
     try {
-      await Group.updateMany({ matches: req.body.id }, { matches: null });
-      const group = await Group.findById(req.body.id);
-      await Group.updateOne({ $set: { is_deleted: true } });
+      await Group.findByIdAndDelete(req.body._id);
       res.status(200).json("Deleted successfully!");
     } catch (error) {
       res.status(500).json(error.message);
@@ -193,6 +191,33 @@ const groupController = {
         await group.updateOne({ $push: { admins: req.body.idUser } });
         res.status(200).json("Added successfully!");
       }
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
+  },
+
+  //set role admin for user
+  joinGroup: async (req, res) => {
+    try {
+      const group = await Group.findById(req.body._id);
+      if (group.members.includes(req.body.idUser)) {
+        res.status(200).json("you are already member of the group!");
+      } else {
+        await group.updateOne({ $push: { members: req.body.idUser } });
+        res.status(200).json("Join successfully!");
+      }
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
+  },
+
+  //set role admin for user
+  LeaveGroup: async (req, res) => {
+    try {
+      const group = await Group.findById(req.body._id);
+
+      await group.updateOne({ $pull: { members: req.body.idUser } });
+      res.status(200).json("Leave successfully!");
     } catch (error) {
       res.status(500).json(error.message);
     }

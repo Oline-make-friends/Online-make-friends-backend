@@ -11,6 +11,7 @@ const userController = {
       const savedUser = await newUser.save();
       res.status(200).json(savedUser);
     } catch (error) {
+      console.log(error.message);
       res.status(500).json(error.message);
     }
   },
@@ -77,6 +78,18 @@ const userController = {
   getAllUser: async (req, res) => {
     try {
       const users = await User.find({ is_admin: false })
+        .populate("friends")
+        .populate("follows");
+      res.status(200).json(users);
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
+  },
+
+  //GET ALL Prove account
+  getAllProveAccount: async (req, res) => {
+    try {
+      const users = await User.find({ is_prove: false })
         .populate("friends")
         .populate("follows");
       res.status(200).json(users);
@@ -197,6 +210,23 @@ const userController = {
         user.is_active === true
           ? await user.updateOne({ is_active: false })
           : await user.updateOne({ is_active: true });
+      }
+      res.status(200).json(user);
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
+  },
+
+  //provet user by id
+  proveUser: async (req, res) => {
+    try {
+      const user = await User.findOne({
+        _id: req.params.id,
+      });
+      {
+        user?.is_prove === true
+          ? await user.updateOne({ is_prove: false })
+          : await user.updateOne({ is_prove: true });
       }
       res.status(200).json(user);
     } catch (error) {
@@ -365,7 +395,6 @@ const userController = {
     }
   },
 
-
   unfollowUser: async (req, res) => {
     try {
       const user = await User.findOne({ username: req.body.username });
@@ -379,7 +408,7 @@ const userController = {
       res.status(500).json(error.message);
     }
   },
-  
+
   //getFriendRequestModel để test coi có tạo chưa
   getRequestFriendRequestModel: async (req, res) => {
     try {
