@@ -20,6 +20,8 @@ const groupRoute = require("./routes/group");
 const chatRoute = require("./routes/chat");
 const eventRoute = require("./routes/event");
 const friendRequestRoute = require("./routes/friendRequest");
+const courseRoute = require("./routes/course");
+const quizRoute = require("./routes/quiz");
 
 //socket.io
 try {
@@ -58,6 +60,8 @@ try {
   app.use("/chat", chatRoute);
   app.use("/friendRequest", friendRequestRoute);
   app.use("/event", eventRoute);
+  app.use("/course", courseRoute);
+  app.use("/quiz", quizRoute);
   const io = require("socket.io")(server, {
     cors: {
       origin: "*",
