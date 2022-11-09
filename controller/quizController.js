@@ -15,6 +15,24 @@ const quizController = {
       res.status(500).json(error.message);
     }
   },
+  updateQuiz: async (req, res) => {
+    try {
+      const quiz = await Quiz.findById(req.params.id);
+      await quiz.updateOne({ $set: req.body });
+      res.status(200).json("delete success");
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
+  },
+
+  deleteQuiz: async (req, res) => {
+    try {
+      await Quiz.findByIdAndDelete(req.params.id);
+      res.status(200).json("delete success");
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
+  },
 };
 
 module.exports = quizController;

@@ -10,7 +10,7 @@ const postSchema = new mongoose.Schema(
     type: {
       type: String,
     },
-    course: {
+    hashtag: {
       type: String,
     },
     content: {

@@ -146,7 +146,7 @@ const postController = {
   findPostHashtag: async (req, res) => {
     try {
       const posts = await Post.find({
-        content: { $regex: req.body.hashtag },
+        hashtag: { $regex: req.body.hashtag },
         is_deleted: false,
       }).populate("created_by");
       res.status(200).json(posts);
