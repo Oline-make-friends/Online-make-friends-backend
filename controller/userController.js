@@ -89,7 +89,7 @@ const userController = {
   //GET ALL Prove account
   getAllProveAccount: async (req, res) => {
     try {
-      const users = await User.find({ is_prove: false })
+      const users = await User.find({ is_prove: { $ne: null } })
         .populate("friends")
         .populate("follows");
       res.status(200).json(users);
