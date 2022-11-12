@@ -66,7 +66,8 @@ const postController = {
     try {
       const posts = await Post.findById(req.params.id)
         .populate("created_by")
-        .populate("comments");
+        .populate("comments")
+        .populate("likes");
       res.status(200).json(posts);
     } catch (error) {
       res.status(500).json(error.message);
