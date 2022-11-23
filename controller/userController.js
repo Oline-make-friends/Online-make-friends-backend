@@ -40,6 +40,29 @@ const userController = {
     }
   },
 
+  //Login admin
+  LoginAdmin: async (req, res) => {
+    try {
+      const { username, password } = req.body;
+      const user = await User.findOne({
+        username: username,
+        password: password,
+      })
+        .populate("friends")
+        .populate("follows");
+      if (user.is_admin === false) {
+        return res.status(200).json("Your are not admin");
+      }
+      if (!user) {
+        return res.status(500).json("Username or password is wrong!");
+      }
+      res.status(200).json(user);
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).json(error.message);
+    }
+  },
+
   //Login by email
   LoginByGmail: async (req, res) => {
     try {
