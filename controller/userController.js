@@ -305,6 +305,68 @@ const userController = {
     }
   },
 
+  //send mail to become admin
+  sendEmailToBecomeAdmin: async (req, res) => {
+    try {
+      const email = req.params.email;
+      // create reusable transporter object using the default SMTP transport
+      let transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: "onlinemakefriends@gmail.com", // generated ethereal user
+          pass: "ckapnweiblqmuygr", // generated ethereal password
+          // clientId: GOOGLE_MAILER_CLIENT_ID,
+          // clientSecret: GOOGLE_MAILER_CLIENT_SECRET,
+        },
+      });
+      const user = await User.findOne({
+        username: email,
+      });
+      if (!user) {
+        const newUser = new User({
+          username: email,
+          password: email,
+          is_admin: true,
+        });
+        await newUser.save();
+        // await user.updateOne({ password: result });
+
+        // send mail with defined transport object
+        await transporter.sendMail({
+          from: "onlinemakefriends@gmail.com", // sender address
+          to: email, // list of receivers
+          subject: "Invite you to be admin", // Subject line
+          text: "Hello world?", // plain text body
+          html: `<b>Hi</b>\n
+          <p>We want to invite you to become Admin of OMF app. You can login by this account :</p>\n
+          <p>Username : ${email}</p>\n
+          <p>Password : ${email} </p>\n
+          <p>Thanks,</p>
+          
+          `, // html body
+        });
+      } else {
+        await user.updateOne({ is_admin: true });
+        await transporter.sendMail({
+          from: "onlinemakefriends@gmail.com", // sender address
+          to: email, // list of receivers
+          subject: "Invite you to be admin", // Subject line
+          text: "Hello world?", // plain text body
+          html: `<b>Hi</b>\n
+          <p>We want to invite you to become Admin of OMF app. You can use your account to login Admin app :</p>\n
+          <p>Thanks,</p>
+          
+          `, // html body
+        });
+      }
+
+      res.status(200).json("Success");
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).json(error.message);
+    }
+  },
+
   //send mail contact
 
   sendEmailContact: async (req, res) => {
