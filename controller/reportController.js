@@ -24,6 +24,16 @@ const reportController = {
     }
   },
 
+  //get report by id
+  getReportById: async (req, res) => {
+    try {
+      const reports = await Report.findById(req.params.id).populate("sent_by");
+      res.status(200).json(reports);
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
+  },
+
   //get user reports
   getUserReport: async (req, res) => {
     try {

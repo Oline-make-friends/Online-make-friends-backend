@@ -50,6 +50,16 @@ const notificationController = {
     }
   },
 
+  // get noti by id
+  getNotiById: async (req, res) => {
+    try {
+      const notifications = await Notification.findById(req.params.id);
+      res.status(200).json(notifications);
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
+  },
+
   // Delete
   deleteNotification: async (req, res) => {
     try {

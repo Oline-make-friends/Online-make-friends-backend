@@ -16,4 +16,7 @@ router.post("/delete/:id", notificationController.deleteNotification);
 //get notification from user
 router.post("/get", notificationController.getAllUserNotification);
 
+//get notification from user
+router.get("/getById/:id", notificationController.getNotiById);
+
 module.exports = router;
