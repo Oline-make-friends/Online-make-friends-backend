@@ -109,6 +109,18 @@ const userController = {
     }
   },
 
+  //GET ALL User
+  getAllAdmin: async (req, res) => {
+    try {
+      const users = await User.find({ is_admin: true })
+        .populate("friends")
+        .populate("follows");
+      res.status(200).json(users);
+    } catch (error) {
+      res.status(500).json(error.message);
+    }
+  },
+
   //GET ALL Prove account
   getAllProveAccount: async (req, res) => {
     try {

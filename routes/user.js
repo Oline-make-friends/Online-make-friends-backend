@@ -8,7 +8,7 @@ router.get("/getAllAccount", userController.getAllAccount);
 router.get("/getAllUser", userController.getAllUser);
 
 //get All User
-router.get("/getAllAdmin", userController.getAllUser);
+router.get("/getAllAdmin", userController.getAllAdmin);
 
 //get All prove account
 router.get("/getAllProveAccount", userController.getAllProveAccount);
