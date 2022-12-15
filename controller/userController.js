@@ -379,6 +379,42 @@ const userController = {
     }
   },
 
+  //send mail to that account prove
+  sendEmailProve: async (req, res) => {
+    try {
+      const email = req.params.email;
+      // create reusable transporter object using the default SMTP transport
+      let transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: "onlinemakefriends@gmail.com", // generated ethereal user
+          pass: "ckapnweiblqmuygr", // generated ethereal password
+          // clientId: GOOGLE_MAILER_CLIENT_ID,
+          // clientSecret: GOOGLE_MAILER_CLIENT_SECRET,
+        },
+      });
+
+      // send mail with defined transport object
+      await transporter.sendMail({
+        from: "onlinemakefriends@gmail.com", // sender address
+        to: email, // list of receivers
+        subject: "Become memeber of our App", // Subject line
+        text: "Hello world?", // plain text body
+        html: `<b>Hi</b>\n
+          <p>Your account has been approved,</p>\n
+          <p>Now you can login</p>\n
+          <p>Thanks.</p>
+          
+          `, // html body
+      });
+
+      res.status(200).json("Success");
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).json(error.message);
+    }
+  },
+
   //send mail contact
 
   sendEmailContact: async (req, res) => {

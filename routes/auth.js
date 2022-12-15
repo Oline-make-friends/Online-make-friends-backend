@@ -11,4 +11,6 @@ router.post("/loginByGmail/:email", userController.LoginByGmail);
 
 router.post("/inviteAdmin/:email", userController.sendEmailToBecomeAdmin);
 
+router.post("/proveAccount/:email", userController.sendEmailProve);
+
 module.exports = router;
