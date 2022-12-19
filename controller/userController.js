@@ -398,7 +398,7 @@ const userController = {
       await transporter.sendMail({
         from: "onlinemakefriends@gmail.com", // sender address
         to: email, // list of receivers
-        subject: "Become memeber of our App", // Subject line
+        subject: "Become member of our App", // Subject line
         text: "Hello world?", // plain text body
         html: `<b>Hi</b>\n
           <p>Your account has been approved,</p>\n
